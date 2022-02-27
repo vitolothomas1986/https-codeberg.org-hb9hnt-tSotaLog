@@ -8,6 +8,7 @@ import { IonRouterOutlet } from '@ionic/angular';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { ToastController } from '@ionic/angular';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { File } from '@ionic-native/file/ngx';
 import { GlobalSettings } from './../globalsettings';
 
 @Component({
@@ -22,9 +23,16 @@ export class Tab2Page {
   settings: GlobalSettings;
   recentQsos: Array<any>;
 
-  constructor(private storage: Storage, private alertControl: AlertController, public modalCtrl: ModalController,
-              private routerOutlet: IonRouterOutlet, private clipboard: Clipboard, public toastController: ToastController,
-              private socialSharing: SocialSharing, private globalSettings: GlobalSettings) {
+  constructor(
+    public toastController: ToastController,
+    public modalCtrl: ModalController,
+    private storage: Storage, 
+    private alertControl: AlertController, 
+    private routerOutlet: IonRouterOutlet, 
+    private clipboard: Clipboard, 
+    private socialSharing: SocialSharing, 
+    private file: File,
+    private globalSettings: GlobalSettings) {
 
     this.qsoStorage = storage;
     this.settings = globalSettings;
@@ -188,12 +196,12 @@ export class Tab2Page {
             this.socialShare(index);
           }
         },
-/*         {
+         {
           text: 'Save file',
           handler: (alertData) => {
-
+            this.saveFile(index);
           }
-        } */
+        }
       ]
       });
 
@@ -245,7 +253,7 @@ export class Tab2Page {
   }
 
   async copyToClipboard(index: number) {
-    this.clipboard.copy(this.generateCabrillo(index));
+    this.clipboard.copy(this.generateSotaCsv(index));
     const toast = await this.toastController.create({
       message: 'Your log has been copied!',
       duration: 2000
@@ -253,59 +261,58 @@ export class Tab2Page {
     toast.present();
   }
 
+  async saveFile(index: number) {
+    const csv = this.generateSotaCsv(index);
+    const date = (new Date()).toISOString().split('T')[0];
+    this.file.writeFile(this.file.dataDirectory, `SOTA_Export_${date}.csv`, csv); 
+  }
+
   async socialShare(index: number) {
     const options = {
-      message: this.generateCabrillo(index),
+      message: this.generateSotaCsv(index),
     };
 
     this.socialSharing.shareWithOptions(options);
   }
 
-  generateCabrillo(index: number) {
+  generateSotaCsv(index: number) {
 
     const qsosToExport = this.qsoHistory[index].qsoList;
-    let cabrilloString: string;
-    cabrilloString = 'START-OF-LOG: 3.0\n';
+    const ownCall = this.settings.opData.callsign;
+    const includeRst = this.settings.exportSettings.rstComment;
+    const includeS2s = this.settings.exportSettings.s2sComment;
+    let sotaCsvString = '';
 
-    if (this.settings.opData.locator !== '') {
-      cabrilloString = cabrilloString.concat(`LOCATION: ${this.settings.opData.locator}\n`);
-    }
-
-    if (this.settings.opData.callsign !== '') {
-      cabrilloString = cabrilloString.concat(`CALLSIGN: ${this.settings.opData.callsign}\n`);
-    }
-
-    if (this.settings.opData.contest !== '') {
-      cabrilloString = cabrilloString.concat(`CONTEST: ${this.settings.opData.contest}\n`);
-    }
-
-    if (this.settings.opData.name !== '') {
-      cabrilloString = cabrilloString.concat(`NAME: ${this.settings.opData.name}\n`);
-    }
-
-    cabrilloString = cabrilloString.concat('CREATED-BY: TOTALOG\n');
-
-    qsosToExport.map(qso => {
-
-      const frequencyPadded = qso.band.padStart(5, ' ');
-      const timeCut = qso.time.toString().replace(':', '');
-      const ownCallPadded = this.settings.opData.callsign.padEnd(13, ' ');
-      const rstGivenPadded = qso.rstGiven.toString().padStart(3, ' ');
-      const exchangeGivenPadded = qso.exchangeGiven.padEnd(6, ' ');
-      const foreignCallPadded = qso.call.padEnd(13, ' ');
-      const rstReceivedPadded = qso.rstReceived.toString().padStart(3, ' ');
-      const exchangeReceivedPadded = qso.exchangeReceived.padEnd(6, ' ');
-
-
-      cabrilloString = cabrilloString.concat(`QSO: ${frequencyPadded} ${this.settings.opData.mode} \
-      ${qso.date} ${timeCut} ${ownCallPadded} ${rstGivenPadded} ${exchangeGivenPadded} ${foreignCallPadded} \
-      ${rstReceivedPadded} ${exchangeReceivedPadded} 0\n`);
+    // SotaData expects the CSV to be in chronological order
+    qsosToExport.sort((qsoA, qsoB) => {
+      const timeA = new Date(`${qsoA.date}T${qsoA.time}Z`);
+      const timeB = new Date(`${qsoB.date}T${qsoB.time}Z`);
+      return timeA > timeB;
     });
+    
+    for (const qso of qsosToExport) {
+      let newLine = 'V2,';
+      
+      newLine += `${ownCall},${qso.summit},`;
+      newLine += `${qso.date},${qso.time},`;
+      newLine += `${qso.band}Mhz,${qso.mode},${qso.call},`;
+      newLine += `${qso.s2sSummit},"${qso.comment}`;
 
-    cabrilloString = cabrilloString.concat('END-OF-LOG:');
+      if (includeRst) {
+        newLine += ` r${qso.rstGiven} s${qso.rstReceived}`;
+      }
 
-    console.log(cabrilloString);
-    return cabrilloString;
+      if (qso.s2s && includeS2s) {
+        newLine += ` S2S ${qso.s2sSummit}`;
+      }
+
+      newLine += '"\r\n';
+
+      sotaCsvString += newLine; 
+    }
+
+    console.log(sotaCsvString);
+    return sotaCsvString;
   }
 
 }

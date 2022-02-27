@@ -13,13 +13,11 @@ export class GlobalSettings {
   opData: {
     callsign: string,
     name: string,
-    contest: string,
-    locator: string,
-    mode: string,
-    timeOffset: {
-      text: string,
-      value: number
-    }
+  };
+
+  exportSettings: {
+    rstComment: boolean,
+    s2sComment: boolean
   };
 
   recentQsos: Array<any>;
@@ -28,14 +26,12 @@ export class GlobalSettings {
 
     this.opData = {
       callsign: '',
-      name: '',
-      contest: '',
-      locator: '',
-      mode: '',
-      timeOffset: {
-        text: 'Choose...',
-        value: 0
-      }
+      name: ''
+    };
+
+    this.exportSettings = {
+      rstComment: true,
+      s2sComment: true
     };
 
     this.settingsStorage = storage;
@@ -67,7 +63,17 @@ export class GlobalSettings {
         this.opData = result;
 
       }
+    } catch (error) {
+      console.log(error);
+    }
 
+    try {
+      const result = await this.storage.get('export-settings');
+      if ((result != null) && (result !== undefined)) {
+
+        this.exportSettings = result;
+
+      }
     } catch (error) {
       console.log(error);
     }

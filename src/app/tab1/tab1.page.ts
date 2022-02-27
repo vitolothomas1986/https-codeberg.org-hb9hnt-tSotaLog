@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { PopoverController } from '@ionic/angular';
-import { EditPopoverComponent } from '../edit-popover/edit-popover.component';
 import { ToastController } from '@ionic/angular';
 
 
@@ -58,31 +57,58 @@ export class Tab1Page {
 
   form = {
     band: '',
-    time: '',
-    date: '',
+    mode: '',
+    summit: '',
+    time: undefined,
+    date: undefined,
     call: '',
-    rstGiven: '59',
-    rstReceived: '59',
-    exchangeGiven: '',
-    exchangeReceived: ''
+    rstGiven: '',
+    rstReceived: '',
+    comment: '',
+    s2s: false,
+    s2sSummit: ''
   };
+
+  get editing() {
+    if (this.form.date || this.form.time) {
+      return true;
+    }
+    return false;
+  }
 
   logQso() {
     const now = new Date();
     const newQso = Object.assign({}, this.form); // copy content of object, don't link object itself!
-    newQso.time = (now.getHours() - this.settings.opData.timeOffset.value).toString().padStart(2, '0')
-    + ':' + now.getMinutes().toString().padStart(2, '0');
-    newQso.date = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+    
+    // If time and date are not defined we're editing
+    // a new QSO
+    if (newQso.time == undefined) {
+      const timeToStringOpts = {
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: 'UTC',
+        hour12: false
+      };
+    
+      newQso.time = now.toLocaleTimeString([], timeToStringOpts);
+    }
+
+    if (newQso.date == undefined) {
+      newQso.date = now.toISOString().split("T")[0];
+    }
+    
     this.settings.recentQsos.unshift(newQso);
     this.storage.set('qsos', this.settings.recentQsos);
 
     // clear inputs
+    this.form.time = undefined;
+    this.form.date = undefined;
     this.form.call = '';
-    this.form.exchangeGiven = '';
-    this.form.exchangeReceived = '';
-    this.form.rstGiven = '59';
-    this.form.rstReceived = '59';
-
+    this.form.rstGiven = '';
+    this.form.rstReceived = '';
+    this.form.comment = '';
+    this.form.s2s = false;
+    this.form.s2sSummit = '';
   }
 
   async deleteQso(index: number) {
@@ -107,30 +133,10 @@ export class Tab1Page {
     });
 
     toast.present();
-
-
   }
 
-  async showEditDialog(qsoNumber: number) {
-
+  async editQso(qsoNumber: number) {
     const editedQso = Object.assign({}, this.settings.recentQsos[qsoNumber]) ;
-
-    const popover = await this.popoverController.create({
-      component: EditPopoverComponent,
-      componentProps: {editedQso},
-      translucent: true
-    });
-
-
-    popover.onDidDismiss().then(data => {
-      if (data.data) { // flag is set by save button on popover
-        Object.assign(this.settings.recentQsos[qsoNumber], editedQso);
-        this.storage.set('qsos', this.settings.recentQsos);
-      }
-    });
-
-    return await popover.present();
-
+    this.form = editedQso;
   }
-
 }

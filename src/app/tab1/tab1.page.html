@@ -11,35 +11,34 @@
     <ion-grid>
       <ion-row class="ion-align-items-stretch">
         <ion-col>
+          <input [(ngModel)]="form.summit" type="text" placeholder="Summit Reference">
+        </ion-col>
+        <ion-col>
           <div>
             <input [(ngModel)]="form.call" type="text" placeholder="Call">
           </div>
         </ion-col>
-        <ion-col>
-          <div>
-            <ion-select [(ngModel)]="form.band" placeholder="Band">
-              <ion-select-option value="1800">160m</ion-select-option>
-              <ion-select-option value="3500">80m</ion-select-option>
-              <ion-select-option value="5000">60m</ion-select-option>
-              <ion-select-option value="7000">40m</ion-select-option>
-              <ion-select-option value="10000">30m</ion-select-option>
-              <ion-select-option value="14000">20m</ion-select-option>
-              <ion-select-option value="18000">17m</ion-select-option>
-              <ion-select-option value="21000">15m</ion-select-option>
-              <ion-select-option value="24000">12m</ion-select-option>
-              <ion-select-option value="28000">10m</ion-select-option>
-              <ion-select-option value="50">6m</ion-select-option>
-              <ion-select-option value="70">4m</ion-select-option>
-              <ion-select-option value="144">2m</ion-select-option>
-              <ion-select-option value="432">70cm</ion-select-option>
-              <ion-select-option value="1.2G">23cm</ion-select-option>
-              <ion-select-option value="2.3G">13cm</ion-select-option>
-            </ion-select>
-          </div>
-        </ion-col>
-      </ion-row>
-
-      <ion-row class="ion-align-items-stretch">
+     </ion-row>
+     <ion-row class="ion-align-items-stretch">
+       <ion-col>
+         <div>
+           <input [(ngModel)]="form.band" type="number" placeholder="MHz">
+         </div>
+       </ion-col>
+       <ion-col>
+         <div>
+           <ion-select [(ngModel)]="form.mode" placeholder="Mode">
+             <ion-select-option>FM</ion-select-option>
+             <ion-select-option>SSB</ion-select-option>
+             <ion-select-option>CW</ion-select-option>
+             <ion-select-option>DATA</ion-select-option>
+             <ion-select-option>AM</ion-select-option>
+             <ion-select-option>Other</ion-select-option>
+           </ion-select>
+         </div>
+       </ion-col>
+     </ion-row>
+     <ion-row class="ion-align-items-stretch">
         <ion-col>
           <div>
             <input [(ngModel)]="form.rstGiven" type="number" placeholder="RST TX">
@@ -50,29 +49,40 @@
             <input [(ngModel)]="form.rstReceived" type="number" placeholder="RST RX">
           </div>
         </ion-col>
-      </ion-row>
+     </ion-row>
 
       <ion-row class="ion-align-items-stretch">
         <ion-col>
           <div>
-            <input [(ngModel)]="form.exchangeGiven" type="text" placeholder="Ex TX">
-          </div>
-        </ion-col>
-        <ion-col>
-          <div>
-            <input [(ngModel)]="form.exchangeReceived" type="text" placeholder="Ex RX">
+            <input [(ngModel)]="form.comment" type="text" placeholder="Comment">
           </div>
         </ion-col>
       </ion-row>
-      <br />
-      <ion-button color="secondary" expand="block" shape="round" strong="true" (click)="logQso()">Add QSO</ion-button>
+      <ion-row *ngIf="form.s2s">
+        <ion-col>
+          <input [(ngModel)]="form.s2sSummit" type="text" placeholder="s2s Summit Reference">
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <div>
+            <ion-item>
+              <ion-label>s2s</ion-label>
+              <ion-checkbox [(ngModel)]="form.s2s"></ion-checkbox>
+            </ion-item>
+          </div>
+        </ion-col>
+        <ion-col> 
+          <ion-button color="secondary" expand="block" shape="round" strong="true" (click)="logQso()">
+            {{ this.editing ? 'Edit QSO' : 'Add QSO' }}
+          </ion-button>
 
+        </ion-col>
+      </ion-row>
     </ion-grid>
   </ion-card-content>
 </ion-card>
-
 <ion-content>
-
   <ion-list>
     <ion-list-header>
       Recent QSOs
@@ -82,7 +92,7 @@
       <ion-label>
         <h2>{{qso.time}} &nbsp; <strong>{{qso.call}}</strong> </h2>
       </ion-label>
-      <ion-button (click)="showEditDialog(i)" color="tertiary" shape="round">edit</ion-button>
+      <ion-button (click)="editQso(i)" color="tertiary" shape="round">edit</ion-button>
       <ion-button (click)="deleteQso(i)" color="danger" shape="round">delete</ion-button>
     </ion-item>
   </ion-list>

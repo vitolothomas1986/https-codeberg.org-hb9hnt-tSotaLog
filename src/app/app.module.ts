@@ -13,6 +13,7 @@ import { EditPopoverComponent } from './edit-popover/edit-popover.component';
 import { FormsModule } from '@angular/forms';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { File } from '@ionic-native/file/ngx';
 
 @NgModule({
   declarations: [AppComponent, EditPopoverComponent],
@@ -24,6 +25,7 @@ import { SocialSharing } from '@ionic-native/social-sharing/ngx';
     GlobalSettings,
     Clipboard,
     SocialSharing,
+    File,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

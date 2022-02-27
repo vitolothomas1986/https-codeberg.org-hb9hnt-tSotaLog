@@ -44,54 +44,10 @@ export class Tab3Page {
 
   }
 
-  async showTimeOffsetPicker() {
-
-    const timeOffsetPicker = await this.pickerControl.create({
-      columns: [
-        {
-          name: 'timeOffset',
-          options: this.generateTimeOffsetValues()
-        }
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        },
-        {
-          text: 'Confirm',
-          handler: (value) => {
-            this.settings.opData.timeOffset = value.timeOffset;
-            this.saveOpSettingsToStorage();
-          }
-        }
-      ]
-
-    });
-
-    await timeOffsetPicker.present();
-
-  }
-
-  generateTimeOffsetValues() {
-    const options = [];
-    for (let i = -12; i < 13; i++) {
-
-      if (i < 0) {
-        options.push({text: `UTC${i}`, value: `${i}`});
-      }
-
-      if (i === 0) {
-        options.push({text: 'UTC', value: `${i}`});
-      }
-
-      if (i > 0) {
-        options.push({text: `UTC+${i}`, value: `${i}`});
-      }
-
-    }
-
-    return options;
+  async toggleExportSettings() {
+    await this.settings.exportSettings
+    console.log(this.settings.exportSettings)
+    this.settings.saveToStorage('export-settings' , this.settings.exportSettings);
 
   }
 

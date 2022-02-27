@@ -38,49 +38,27 @@
           <input type="text" slot="end" [(ngModel)]="settings.opData.name" (click)="saveOpSettingsToStorage()" placeholder="Name"> 
         </ion-item>
 
-        <ion-item lines="full">
-          <ion-icon slot="start" name="trophy"></ion-icon>
-          <input type="text" slot="end" [(ngModel)]="settings.opData.contest" (click)="saveOpSettingsToStorage()" placeholder="Contest"> 
-        </ion-item>
-
-        <ion-item lines="full">
-          <ion-icon slot="start" name="location"></ion-icon>
-          <input type="text" slot="end" [(ngModel)]="settings.opData.locator" (click)="saveOpSettingsToStorage()" placeholder="Locator"> 
-        </ion-item>
-
-        <ion-item lines="full">
-          <ion-icon slot="start" name="radio"></ion-icon>
-
-          <ion-select slot="end" [(ngModel)]="settings.opData.mode" placeholder="select mode..." (click)="saveOpSettingsToStorage()">
-            <ion-select-option value="PH">SSB</ion-select-option>
-            <ion-select-option value="CW">CW</ion-select-option>
-            <ion-select-option value="FM">FM</ion-select-option>
-            <ion-select-option value="RY">RTTY</ion-select-option>
-            <ion-select-option value="DG">other digimode</ion-select-option>
-          </ion-select>
-        </ion-item>
-
-        <ion-item lines="full">
-          <ion-icon slot="start" name="airplane"></ion-icon>
-<!--           <ion-chip color="tertiary" slot="end">
-            <ion-label> {{settings.opData.timeOffset.text}} </ion-label>
-          </ion-chip> -->
-          <ion-text slot="end">Time Offset: &nbsp; </ion-text>
-          <ion-button color="secondary" expand="full" size="default" shape="round" strong="true" slot="end" (click)="showTimeOffsetPicker()">{{settings.opData.timeOffset.text}}</ion-button>
-        </ion-item>
-
-<!--         <ion-item-divider>
+        <ion-item-divider>
           <ion-label>
-            Data settings
+            Export settings 
           </ion-label>
         </ion-item-divider>
 
         <ion-item lines="full">
-          <ion-icon slot="start" name="trash"></ion-icon>
-            Delete recent QSOs
-          <ion-button color="secondary" expand="full" size="default" shape="round" strong="true" slot="end" >Clear</ion-button>
-        </ion-item> -->
+          <ion-icon slot="start" name="radio"></ion-icon>
+          <ion-label>
+            RST in comment 
+          </ion-label>
+          <ion-toggle [(ngModel)]="settings.exportSettings.rstComment" id="rstcommenttoggle" (ionChange)="toggleExportSettings()" slot="end"></ion-toggle>
+        </ion-item>
+        <ion-item lines="full">
+          <ion-icon slot="start" name="compass"></ion-icon>
+          <ion-label>
+            S2S reference in comment 
+          </ion-label>
+          <ion-toggle [(ngModel)]="settings.exportSettings.s2sComment" id="s2scommenttoggle" (ionChange)="toggleExportSettings()" slot="end"></ion-toggle>
+        </ion-item>
+
 
       </ion-list>
-
 </ion-content>
