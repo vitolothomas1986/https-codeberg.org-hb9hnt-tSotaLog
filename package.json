@@ -1,8 +1,8 @@
 {
-  "name": "test",
+  "name": "tSotaLog",
   "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "author": "tSotaLog Contributors",
+  "homepage": "",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
