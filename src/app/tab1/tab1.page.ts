@@ -15,6 +15,7 @@ import { ToastController } from '@ionic/angular';
 export class Tab1Page {
 
   darkmode: boolean;
+  editingId: number;
   settings: GlobalSettings;
 
   constructor(private storage: Storage, private globalSettings: GlobalSettings,
@@ -36,7 +37,7 @@ export class Tab1Page {
       this.settings.recentQsos = [];
     });
 
-
+    this.editingId = -1
     this.settings = globalSettings;
     this.settings.ready.then(() => {
 
@@ -54,7 +55,6 @@ export class Tab1Page {
 
   }
 
-
   form = {
     band: '',
     mode: '',
@@ -70,36 +70,61 @@ export class Tab1Page {
   };
 
   get editing() {
-    if (this.form.date || this.form.time) {
-      return true;
+    return this.editingId > -1;
+  }
+
+  // Allow user to enter summit reference without the slash and the dash
+  // all lowercase
+  summitCheck(event) {
+    const regex = /([A-Za-z]{2})\/?([A-Za-z]{2})-?([0-9]{3})/;
+    const newString = event.target.value.replace(regex, "$1/$2-$3").toUpperCase();
+
+    switch (event.target.id) {
+      case "summitInput":
+        this.form.summit = newString;
+        break;
+      case "s2sInput": 
+        this.form.s2sSummit = newString;
+        break;
     }
-    return false;
+  }
+
+  callCheck(event) {
+    this.form.call = event.target.value.toUpperCase();
   }
 
   logQso() {
-    const now = new Date();
     const newQso = Object.assign({}, this.form); // copy content of object, don't link object itself!
     
-    // If time and date are not defined we're editing
-    // a new QSO
-    if (newQso.time == undefined) {
-      const timeToStringOpts = {
-        hour: '2-digit',
-        minute: '2-digit',
-        timeZone: 'UTC',
-        hour12: false
-      };
-    
-      newQso.time = now.toLocaleTimeString([], timeToStringOpts);
+    if (this.editing) {
+      this.settings.recentQsos[this.editingId] = newQso;
+      this.editingId = -1;
+    } else {
+      const now = new Date();
+      if (newQso.time == undefined) {
+        const timeToStringOpts = {
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZone: 'UTC',
+          hour12: false
+        };
+
+        newQso.time = now.toLocaleTimeString([], timeToStringOpts);
+      }
+
+      if (newQso.date == undefined) {
+        newQso.date = now.toISOString().split("T")[0];
+      }
+ 
+      this.settings.recentQsos.unshift(newQso);
     }
 
-    if (newQso.date == undefined) {
-      newQso.date = now.toISOString().split("T")[0];
-    }
-    
-    this.settings.recentQsos.unshift(newQso);
     this.storage.set('qsos', this.settings.recentQsos);
 
+    this.resetForm();
+ }
+
+  resetForm() {
     // clear inputs
     this.form.time = undefined;
     this.form.date = undefined;
@@ -109,6 +134,9 @@ export class Tab1Page {
     this.form.comment = '';
     this.form.s2s = false;
     this.form.s2sSummit = '';
+
+    // Reset editing id
+    this.editingId = -1;
   }
 
   async deleteQso(index: number) {
@@ -136,7 +164,10 @@ export class Tab1Page {
   }
 
   async editQso(qsoNumber: number) {
+    this.editingId = qsoNumber;
     const editedQso = Object.assign({}, this.settings.recentQsos[qsoNumber]) ;
     this.form = editedQso;
+    console.log(this.editingId)
+    console.log(this.editing)
   }
 }
