@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="102" id="de.dm1ri.totalog" version="0.1.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>TOTALOG</name>
-    <description>An awesome Ionic/Cordova app.</description>
-    <author email="hi@ionicframework.com" href="http://ionicframework.com/">Ionic Framework Team</author>
+<widget android-versionCode="" id="ch.hb9hnt.tsotalog" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>tSotaLog</name>
+    <description>Log SOTA activations on your phone or tablet</description>
+    <author email="nomail@hb9hnt.ch" href="https://codeberg.org/hb9hnt/tSotaLog">tSotaLog Contributors</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
