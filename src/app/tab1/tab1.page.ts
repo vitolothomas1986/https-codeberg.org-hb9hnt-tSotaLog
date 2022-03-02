@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { PopoverController } from '@ionic/angular';
+import { EditPopoverComponent } from '../edit-popover/edit-popover.component';
 import { ToastController } from '@ionic/angular';
 
 
@@ -15,7 +16,6 @@ import { ToastController } from '@ionic/angular';
 export class Tab1Page {
 
   darkmode: boolean;
-  editingId: number;
   settings: GlobalSettings;
 
   constructor(private storage: Storage, private globalSettings: GlobalSettings,
@@ -37,7 +37,6 @@ export class Tab1Page {
       this.settings.recentQsos = [];
     });
 
-    this.editingId = -1
     this.settings = globalSettings;
     this.settings.ready.then(() => {
 
@@ -69,24 +68,13 @@ export class Tab1Page {
     s2sSummit: ''
   };
 
-  get editing() {
-    return this.editingId > -1;
-  }
-
   // Allow user to enter summit reference without the slash and the dash
   // all lowercase
   summitCheck(event) {
     const regex = /([A-Za-z]{2})\/?([A-Za-z]{2})-?([0-9]{3})/;
     const newString = event.target.value.replace(regex, "$1/$2-$3").toUpperCase();
+    event.target.value = newString;
 
-    switch (event.target.id) {
-      case "summitInput":
-        this.form.summit = newString;
-        break;
-      case "s2sInput": 
-        this.form.s2sSummit = newString;
-        break;
-    }
   }
 
   callCheck(event) {
@@ -96,28 +84,23 @@ export class Tab1Page {
   logQso() {
     const newQso = Object.assign({}, this.form); // copy content of object, don't link object itself!
     
-    if (this.editing) {
-      this.settings.recentQsos[this.editingId] = newQso;
-      this.editingId = -1;
-    } else {
-      const now = new Date();
-      if (newQso.time == undefined) {
-        const timeToStringOpts = {
-          hour: '2-digit',
-          minute: '2-digit',
-          timeZone: 'UTC',
-          hour12: false
-        };
+    const now = new Date();
+    if (newQso.time == undefined) {
+      const timeToStringOpts = {
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: 'UTC',
+        hour12: false
+      };
 
-        newQso.time = now.toLocaleTimeString([], timeToStringOpts);
-      }
-
-      if (newQso.date == undefined) {
-        newQso.date = now.toISOString().split("T")[0];
-      }
- 
-      this.settings.recentQsos.unshift(newQso);
+      newQso.time = now.toLocaleTimeString([], timeToStringOpts);
     }
+
+    if (newQso.date == undefined) {
+      newQso.date = now.toISOString().split("T")[0];
+    }
+ 
+    this.settings.recentQsos.unshift(newQso);
 
     this.storage.set('qsos', this.settings.recentQsos);
 
@@ -134,9 +117,6 @@ export class Tab1Page {
     this.form.comment = '';
     this.form.s2s = false;
     this.form.s2sSummit = '';
-
-    // Reset editing id
-    this.editingId = -1;
   }
 
   async deleteQso(index: number) {
@@ -163,11 +143,26 @@ export class Tab1Page {
     toast.present();
   }
 
-  async editQso(qsoNumber: number) {
-    this.editingId = qsoNumber;
+  async showEditDialog(qsoNumber: number) {
+
     const editedQso = Object.assign({}, this.settings.recentQsos[qsoNumber]) ;
-    this.form = editedQso;
-    console.log(this.editingId)
-    console.log(this.editing)
+
+    const popover = await this.popoverController.create({
+      component: EditPopoverComponent,
+      componentProps: {editedQso},
+      translucent: true
+    });
+
+
+    popover.onDidDismiss().then(data => {
+      if (data.data) { // flag is set by save button on popover
+        Object.assign(this.settings.recentQsos[qsoNumber], editedQso);
+        this.storage.set('qsos', this.settings.recentQsos);
+      }
+    });
+
+    return await popover.present();
+
   }
+
 }

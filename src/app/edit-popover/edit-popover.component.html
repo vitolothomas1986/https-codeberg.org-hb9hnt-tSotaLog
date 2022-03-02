@@ -2,7 +2,7 @@
     <ion-grid>
       <ion-row>
         <ion-col>
-          <ion-title>Edit QSO</ion-title>
+        <ion-title>Edit QSO</ion-title>
         </ion-col>
         <ion-col>
           <ion-button color="secondary" shape="round" size="small" strong="true" expand="block" (click)="dismissAndSave()">Save QSO</ion-button>
@@ -30,33 +30,36 @@
   </ion-item>
 
   <ion-item>
-    <ion-label position="floating">Call</ion-label>
+    <ion-label position="floating">Summit</ion-label>
     <ion-input
       type="text"
-      [(ngModel)]="qsoParams.call">
+      [(ngModel)]="qsoParams.summit"
+      (ionChange)="summitCheck($event)">
     </ion-input>
   </ion-item>
 
   <ion-item>
-    <ion-label position="floating">Band</ion-label>
-  <ion-select placeholder="Band" [(ngModel)]="qsoParams.band">
-    <ion-select-option value="1800">160m</ion-select-option>
-    <ion-select-option value="3500">80m</ion-select-option>
-    <ion-select-option value="5000">60m</ion-select-option>
-    <ion-select-option value="7000">40m</ion-select-option>
-    <ion-select-option value="10000">30m</ion-select-option>
-    <ion-select-option value="14000">20m</ion-select-option>
-    <ion-select-option value="18000">17m</ion-select-option>
-    <ion-select-option value="21000">15m</ion-select-option>
-    <ion-select-option value="24000">12m</ion-select-option>
-    <ion-select-option value="28000">10m</ion-select-option>
-    <ion-select-option value="50">6m</ion-select-option>
-    <ion-select-option value="70">4m</ion-select-option>
-    <ion-select-option value="144">2m</ion-select-option>
-    <ion-select-option value="432">70cm</ion-select-option>
-    <ion-select-option value="1.2G">23cm</ion-select-option>
-    <ion-select-option value="2.3G">13cm</ion-select-option>
-  </ion-select>
+    <ion-label position="floating">Call</ion-label>
+    <ion-input
+      type="text"
+      [(ngModel)]="qsoParams.call"
+      (ionChange)="callCheck($event)">
+    </ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Mode</ion-label>
+    <ion-select [(ngModel)]="qsoParams.mode" placeholder="Mode">
+      <ion-select-option *ngFor="let mode of settings.modes" value="{{ mode }}">{{ mode }}</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">MHz</ion-label>
+    <ion-input
+      type="number"
+      [(ngModel)]="qsoParams.band">
+    </ion-input>
   </ion-item>
 
   <ion-item>
@@ -76,19 +79,24 @@
   </ion-item>
 
   <ion-item>
-    <ion-label position="floating">EX TX</ion-label>
+    <ion-label position="floating">Comment</ion-label>
     <ion-input
       type="text"
-      [(ngModel)]="qsoParams.exchangeGiven">
+      [(ngModel)]="qsoParams.comment">
     </ion-input>
   </ion-item>
-
+            
   <ion-item>
-    <ion-label position="floating">EX RX</ion-label>
-    <ion-input
-      type="text"
-      [(ngModel)]="qsoParams.exchangeReceived">
+    <ion-label>s2s</ion-label>
+    <ion-checkbox [(ngModel)]="qsoParams.s2s"></ion-checkbox>
+  </ion-item>
+          
+  <ion-item *ngIf="qsoParams.s2s">
+    <ion-label position="floating">s2s Summit</ion-label>
+    <ion-input 
+      type="text" 
+      [(ngModel)]="qsoParams.s2sSummit" 
+      (ionChange)="summitCheck($event)">
     </ion-input>
   </ion-item>
-
 </ion-content>

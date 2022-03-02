@@ -9,29 +9,19 @@
 <ion-card>
   <ion-card-content>
     <ion-grid>
-      <ion-row class="ion-align-items-stretch" *ngIf="this.editing">
+     <ion-row class="ion-align-items-stretch">
         <ion-col>
-          <input [(ngModel)]="form.date" type="text" placeholder="Date">
-        </ion-col>
-        <ion-col>
-          <div>
-            <input [(ngModel)]="form.time" type="text" placeholder="Time">
-          </div>
-        </ion-col>
-      </ion-row>
-      <ion-row class="ion-align-items-stretch">
-        <ion-col>
-          <input [(ngModel)]="form.summit" type="text" id="summitInput" (change)="this.summitCheck($event)" placeholder="Summit Reference">
+          <ion-input 
+            [(ngModel)]="form.summit" 
+            type="text" id="summitInput" 
+            (ionChange)="this.summitCheck($event)" 
+            placeholder="Summit Reference">
+          </ion-input>
         </ion-col>
         <ion-col>
           <div>
             <ion-select [(ngModel)]="form.mode" placeholder="Mode">
-              <ion-select-option>FM</ion-select-option>
-              <ion-select-option>SSB</ion-select-option>
-              <ion-select-option>CW</ion-select-option>
-              <ion-select-option>DATA</ion-select-option>
-              <ion-select-option>AM</ion-select-option>
-              <ion-select-option>Other</ion-select-option>
+              <ion-select-option *ngFor="let mode of settings.modes" value="{{ mode }}">{{ mode }}</ion-select-option>
             </ion-select>
           </div>
         </ion-col>
@@ -44,7 +34,12 @@
         </ion-col>
         <ion-col>
           <div>
-            <input [(ngModel)]="form.call" (change)="this.callCheck($event)" type="text" placeholder="Their Callsign">
+            <ion-input 
+              [(ngModel)]="form.call" 
+              (ionChange)="this.callCheck($event)"
+              type="text" 
+              placeholder="Their Callsign">
+            </ion-input>
           </div>
         </ion-col>
      </ion-row>
@@ -70,11 +65,17 @@
       </ion-row>
       <ion-row *ngIf="form.s2s">
         <ion-col>
-          <input [(ngModel)]="form.s2sSummit" type="text" id="s2sInput" (change)="this.summitCheck($event)" placeholder="s2s Summit Reference">
+          <ion-input 
+            [(ngModel)]="form.s2sSummit" 
+            type="text" 
+            id="s2sInput" 
+            (ionChange)="this.summitCheck($event)" 
+            placeholder="s2s Summit Reference">
+          </ion-input>
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size="6">
+        <ion-col>
           <div>
             <ion-item>
               <ion-label>s2s</ion-label>
@@ -84,12 +85,7 @@
         </ion-col>
         <ion-col> 
           <ion-button color="secondary" expand="block" shape="round" strong="true" (click)="logQso()">
-            {{ this.editing ? 'Save QSO' : 'Add QSO' }}
-          </ion-button>
-        </ion-col>
-        <ion-col *ngIf="this.editing"> 
-          <ion-button color="tertiary" expand="block" shape="round" strong="true" (click)="resetForm()">
-            Cancel 
+            Add QSO
           </ion-button>
         </ion-col>
       </ion-row>
@@ -106,7 +102,7 @@
       <ion-label>
         <h2>{{qso.time}} &nbsp; <strong>{{qso.call}}</strong> </h2>
       </ion-label>
-      <ion-button (click)="editQso(i)" color="tertiary" shape="round">edit</ion-button>
+      <ion-button (click)="showEditDialog(i)" color="tertiary" shape="round">edit</ion-button>
       <ion-button (click)="deleteQso(i)" color="danger" shape="round">delete</ion-button>
     </ion-item>
   </ion-list>

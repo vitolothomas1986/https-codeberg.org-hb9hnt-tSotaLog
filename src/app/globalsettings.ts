@@ -22,6 +22,8 @@ export class GlobalSettings {
 
   recentQsos: Array<any>;
 
+  modes: Array<string>;
+
   constructor(private storage: Storage) {
 
     this.opData = {
@@ -36,6 +38,8 @@ export class GlobalSettings {
 
     this.settingsStorage = storage;
     this.ready = this.initialize();
+
+    this.modes = ["FM", "SSB", "CW", "DATA", "AM", "Other"];
 
   }
 
