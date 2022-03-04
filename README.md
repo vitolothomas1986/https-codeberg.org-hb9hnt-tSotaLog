@@ -44,11 +44,19 @@ If it is latter try to change the storage permissions for the app in the Android
 
 You will but you have to wait for release 0.2.0
 
-## Developing and Debuggin
+## Developing and Debugging
 
 ### Setting everything up on Linux
 
-Install the Android SDK for you distribution, then:
+You need the following installed:
+
+* OpenJDK development package from your distro
+* gradle
+* npm
+* Android tools including platform-tools. Android Studio should be ok, too.
+
+Then:
+
 
 ```bash
 sudo npm i -g @ionic/cli -g cordova -g native-run -g cordova-res
