@@ -3,7 +3,7 @@
   overflow: hidden;
 }
 
-  input {
+ input, ion-input, ion-select{
     border-radius: 30px;
     border-spacing: 3px;
     border-style: none;
@@ -14,7 +14,7 @@
     width: 97%;
   }
 
-  textarea:focus, input:focus{
+  textarea:focus, input:focus, ion-input.has-focus{
     outline: none;
     border: solid 1px var(--ion-color-secondary);
   }

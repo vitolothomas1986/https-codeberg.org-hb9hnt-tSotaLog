@@ -15,6 +15,7 @@
             [(ngModel)]="form.summit" 
             type="text" id="summitInput" 
             (ionChange)="this.summitCheck($event)" 
+            clear-input="true"
             placeholder="Summit Reference">
           </ion-input>
         </ion-col>
@@ -29,7 +30,11 @@
       <ion-row class="ion-align-items-stretch">
         <ion-col>
           <div>
-            <input [(ngModel)]="form.band" type="number" placeholder="MHz">
+            <input 
+              [(ngModel)]="form.band" 
+              type="number" 
+              clear-input="true"
+              placeholder="MHz">
           </div>
         </ion-col>
         <ion-col>
@@ -37,8 +42,8 @@
             <ion-input 
               [(ngModel)]="form.call" 
               (ionChange)="this.callCheck($event)"
-              type="text" 
-              placeholder="Their Callsign">
+              type="textVisiblePassword" 
+              placeholder="Callsign">
             </ion-input>
           </div>
         </ion-col>
