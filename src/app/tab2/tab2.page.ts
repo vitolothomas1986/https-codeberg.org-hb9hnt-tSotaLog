@@ -36,6 +36,7 @@ export class Tab2Page {
 
     this.qsoStorage = storage;
     this.settings = globalSettings;
+    this.file = file;
 
     this.storage.get('qsoHistory').then((value) => {
 
@@ -262,14 +263,31 @@ export class Tab2Page {
   }
 
   async saveFile(index: number) {
+    // Somewhat hacky code I found here...
+    // https://github.com/jiahao1553/demo-ionic2-save-csv/blob/master/src/pages/home/home.ts
     const csv = this.generateSotaCsv(index);
     const date = (new Date()).toISOString().split('T')[0];
-    this.file.writeFile(this.file.dataDirectory, `SOTA_Export_${date}.csv`, csv); 
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const linkElement = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    
+    linkElement.setAttribute("href", url);
+    linkElement.setAttribute("download", `SOTA_${date}.csv`);
+    linkElement.style.visibility = "hidden";
+    document.body.appendChild(linkElement);
+    linkElement.click();
+    document.body.removeChild(linkElement);
   }
 
   async socialShare(index: number) {
+    const csv = this.generateSotaCsv(index);
+    const date = (new Date()).toISOString().split('T')[0];
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+ 
     const options = {
-      message: this.generateSotaCsv(index),
+      subject: `SOTA_${date}`,
+      file: url
     };
 
     this.socialSharing.shareWithOptions(options);
