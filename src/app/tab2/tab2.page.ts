@@ -191,12 +191,14 @@ export class Tab2Page {
             this.copyToClipboard(index);
           }
         },
+        /*
         {
           text: 'Share',
           handler: (alertData) => {
             this.socialShare(index);
           }
         },
+        */
          {
           text: 'Save file',
           handler: (alertData) => {
@@ -263,49 +265,80 @@ export class Tab2Page {
   }
 
   async saveFile(index: number) {
-    // Somewhat hacky code I found here...
-    // https://github.com/jiahao1553/demo-ionic2-save-csv/blob/master/src/pages/home/home.ts
+    const name = this.qsoHistory[index].name;
     const csv = this.generateSotaCsv(index);
     const date = (new Date()).toISOString().split('T')[0];
-    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
-    const linkElement = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    
-    linkElement.setAttribute("href", url);
-    linkElement.setAttribute("download", `SOTA_${date}.csv`);
-    linkElement.style.visibility = "hidden";
-    document.body.appendChild(linkElement);
-    linkElement.click();
-    document.body.removeChild(linkElement);
-  }
+    const filename = `${name}_${date}.csv`
+    let message = '';
+    let directory;
 
+    // Try to set up a more user friendly app folder 
+    try {
+      await this.file.checkDir(this.file.externalRootDirectory, 'tSotaLog');
+    } catch {
+      await this.file.createDir(this.file.externalRootDirectory, 'tSotaLog', false);
+    }
+
+    // Check again whether the directory exists
+    try {
+      await this.file.checkDir(this.file.externalRootDirectory, 'tSotaLog');
+      directory = `${this.file.externalRootDirectory}/tSotaLog`;
+    } catch {
+      let directory = this.file.externalDataDirectory;
+    }
+
+    try {
+      const res = await this.file.writeFile(directory, filename, csv, { replace: true });
+      message = `File saved to '${directory.replace(/^file:\/\//, "")}/${filename}'`;
+    } catch {
+      message = "ERROR: Failed to save file!"
+    }
+
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 5000
+    });
+    toast.present();
+  }
+  
+  /*
+  We remove this for now
   async socialShare(index: number) {
+    const name = this.qsoHistory[index].name;
     const csv = this.generateSotaCsv(index);
     const date = (new Date()).toISOString().split('T')[0];
-    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
- 
+    const filename = `${name}_${date}.csv`
+    const res = await this.file.writeFile(this.file.externalDataDirectory, filename, csv, { replace: true });
+
     const options = {
-      subject: `SOTA_${date}`,
-      file: url
+      //message: "csv",
+      //files: res.toURL() 
+      files: [res.toURL]
     };
 
     this.socialSharing.shareWithOptions(options);
   }
+  */
 
   generateSotaCsv(index: number) {
 
     const qsosToExport = this.qsoHistory[index].qsoList;
-    const ownCall = this.settings.opData.callsign;
     const includeRst = this.settings.exportSettings.rstComment;
     const includeS2s = this.settings.exportSettings.s2sComment;
+    let ownCall = this.settings.opData.callsign;
     let sotaCsvString = '';
+
+    if (this.settings.exportSettings.addPortable) {
+      ownCall += "/P";
+    }
 
     // SotaData expects the CSV to be in chronological order
     qsosToExport.sort((qsoA, qsoB) => {
       const timeA = new Date(`${qsoA.date}T${qsoA.time}Z`);
       const timeB = new Date(`${qsoB.date}T${qsoB.time}Z`);
-      return timeA > timeB;
+      if (timeA > timeB) { return 1 };
+      if (timeA < timeB) { return -1 };
+      return 0;
     });
     
     for (const qso of qsosToExport) {
@@ -316,11 +349,15 @@ export class Tab2Page {
       newLine += `${qso.band}Mhz,${qso.mode},${qso.call},`;
       newLine += `${qso.s2sSummit},"${qso.comment}`;
 
-      if (includeRst) {
-        newLine += ` r${qso.rstGiven} s${qso.rstReceived}`;
+      if (includeRst && qso.rstGiven) {
+        newLine += ` r${qso.rstGiven}`;
       }
 
-      if (qso.s2s && includeS2s) {
+      if (includeRst && qso.rstReceived) {
+        newLine += ` s${qso.rstReceived}`;
+      }
+
+      if (includeS2s && qso.s2s) {
         newLine += ` S2S ${qso.s2sSummit}`;
       }
 
