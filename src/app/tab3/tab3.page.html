@@ -58,7 +58,33 @@
           </ion-label>
           <ion-toggle [(ngModel)]="settings.exportSettings.s2sComment" id="s2scommenttoggle" (ionChange)="toggleExportSettings()" slot="end"></ion-toggle>
         </ion-item>
+        <ion-item lines="full">
+          <ion-icon slot="start" name="bonfire"></ion-icon>
+          <ion-label>
+            Add portable suffix <code>/P</code> to your callsign
+          </ion-label>
+          <ion-toggle [(ngModel)]="settings.exportSettings.addPortable" id="addportabletoggle" (ionChange)="toggleExportSettings()" slot="end"></ion-toggle>
+        </ion-item>
 
-
+        <ion-item-divider>
+          <ion-label>
+            Links 
+          </ion-label>
+        </ion-item-divider>
+        <ion-item lines="full">
+          <a href="https://www.sotadata.org.uk/en/upload/activator/csv" target="_blank">
+            CSV upload on SotaData
+          </a>
+        </ion-item>
+        <ion-item lines="full">
+          <a href="https://codeberg.org/hb9hnt/tSotaLog/issues" target="_blank">
+            Issue tracker for tSotaLog 
+          </a>
+        </ion-item>
+        <ion-item lines="full">
+          <a href="https://codeberg.org/hb9hnt/tSotaLog" target="_blank">
+            Source code of tSotaLog 
+          </a>
+        </ion-item>
       </ion-list>
 </ion-content>

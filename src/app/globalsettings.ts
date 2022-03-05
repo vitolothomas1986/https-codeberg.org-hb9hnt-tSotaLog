@@ -17,7 +17,8 @@ export class GlobalSettings {
 
   exportSettings: {
     rstComment: boolean,
-    s2sComment: boolean
+    s2sComment: boolean,
+    addPortable: boolean
   };
 
   recentQsos: Array<any>;
@@ -33,7 +34,8 @@ export class GlobalSettings {
 
     this.exportSettings = {
       rstComment: true,
-      s2sComment: true
+      s2sComment: true,
+      addPortable: true
     };
 
     this.settingsStorage = storage;

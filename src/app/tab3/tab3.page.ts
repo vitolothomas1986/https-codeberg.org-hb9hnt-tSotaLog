@@ -45,9 +45,8 @@ export class Tab3Page {
   }
 
   async toggleExportSettings() {
-    await this.settings.exportSettings
-    console.log(this.settings.exportSettings)
-    this.settings.saveToStorage('export-settings' , this.settings.exportSettings);
+    await this.settings.exportSettings;
+    this.settings.saveToStorage('export-settings', this.settings.exportSettings);
 
   }
 
