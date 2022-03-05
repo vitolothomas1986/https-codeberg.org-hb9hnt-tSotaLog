@@ -24,6 +24,28 @@ the app eventually:
 * Auto-completion of summit references
 * Validation ot fhe data before exporting
 
+## File export
+
+If you load the QSOs into the archive (middle tab), you can export them as CSV suitable
+to import to Sotadata under
+
+https://www.sotadata.org.uk/en/upload/activator/csv
+
+The file will either be saved in a path calles `tSotaData` in your device root or if 
+the app does not have the permission to write to this location under
+
+```
+Android/data/ch.hb9hnt.tsotalog/files
+```
+
+If it is latter try to change the storage permissions for the app in the Android settings.
+
+### Can I create a chaser log?
+
+Officially creating a chaser log is not supported (yet). However, if you create a summit-to-summit
+log and leave your own summit reference empty, SotaData will import this log as a chaser log from
+the exported CSV file.
+
 
 ## Developing and Debuggins
 
