@@ -1,1 +1,1 @@
-FLOSS Ham Radio logging app for small contests and portable operation.
+FLOSS Ham Radio logging app to log QSOs on SOTA (Summits on the Air) activations.

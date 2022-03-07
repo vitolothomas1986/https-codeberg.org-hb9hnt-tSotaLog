@@ -1,1 +1,0 @@
-Einfache FLOSS-App für Funkamateure für kleine Conteste und Portabelbetrieb.

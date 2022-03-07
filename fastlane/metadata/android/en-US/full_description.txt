@@ -1,8 +1,14 @@
-Simple FLOSS Ham Radio logging app for small contests and portable operation.
+tSotaLog is a simple FLOSS Ham Radio app specifically desgined to log SOTA (Summit on the Air)
+QSOs. It is a fork from the more general TOTALOG which is designed to log for small contests
+and portable operation. (Also available on F-Droid)
 
-Features include:
-* logging QSOs
-* edit logged QSOs afterwards
-* archive and manage different QSO lists
-* export and share QSO lists as cabrillo
-* dark mode
+Features include
+
+* Logging SOTA QSOs
+* Logging Summit-to-Summit contacts
+* Editing QSOs
+* Storing incomplete QSOs and editing them later (useful in a pile-up)
+* Exporting a CSV to import into SotaData
+* Automatically rewrite summit-reference hbsz020 as HB/SZ-020
+
+
