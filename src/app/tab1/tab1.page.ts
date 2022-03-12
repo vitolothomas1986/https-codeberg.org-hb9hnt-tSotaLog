@@ -16,6 +16,7 @@ import { ToastController } from '@ionic/angular';
 export class Tab1Page {
 
   darkmode: boolean;
+  logType: string;
   settings: GlobalSettings;
 
   constructor(private storage: Storage, private globalSettings: GlobalSettings,
@@ -37,6 +38,11 @@ export class Tab1Page {
       this.settings.recentQsos = [];
     });
 
+    // Possible types are:
+    // Activator, Summit2Summit, Chaser
+    // TODO: Don't hardcode the log types
+    this.logType = "Activator"
+
     this.settings = globalSettings;
     this.settings.ready.then(() => {
 
@@ -57,16 +63,19 @@ export class Tab1Page {
   form = {
     band: '',
     mode: '',
-    summit: '',
+    activatorSummit: '',
+    chaserSummit: '',
     time: undefined,
     date: undefined,
     call: '',
     rstGiven: '',
     rstReceived: '',
     comment: '',
-    s2s: false,
-    s2sSummit: ''
   };
+
+  get showS2sField() {
+    return this.logType == "Summit2Summit";
+  }
 
   // Allow user to enter summit reference without the slash and the dash
   // all lowercase
@@ -115,8 +124,23 @@ export class Tab1Page {
     this.form.rstGiven = '';
     this.form.rstReceived = '';
     this.form.comment = '';
-    this.form.s2s = false;
-    this.form.s2sSummit = '';
+    this.form.chaserSummit = '';
+
+    // Set back to Activator log
+    this.logType = "Activator";
+  }
+
+  changeType(event) {
+    // If we change the type we have to reset 
+    // some summit fields that are not displayed
+    switch (this.logType) {
+      case "Activator":
+        this.form.chaserSummit = '';
+        break;
+      case "Chaser":
+        this.form.activatorSummit = '';
+        break;
+    }
   }
 
   async deleteQso(index: number) {

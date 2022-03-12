@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Log
+      {{ this.logType }} Log
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -12,12 +12,22 @@
      <ion-row class="ion-align-items-stretch">
         <ion-col>
           <ion-input 
-            [(ngModel)]="form.summit" 
+            *ngIf="logType == 'Chaser'; else otherLog"
+            [(ngModel)]="form.chaserSummit" 
             type="text" id="summitInput" 
             (ionChange)="this.summitCheck($event)" 
             clear-input="true"
-            placeholder="Summit Reference">
+            placeholder="Chaser Summit">
           </ion-input>
+          <ng-template #otherLog>
+            <ion-input
+              [(ngModel)]="form.activatorSummit" 
+              type="text" id="summitInput" 
+              (ionChange)="this.summitCheck($event)" 
+              clear-input="true"
+              placeholder="Summit Reference">
+            </ion-input>
+          </ng-template>
         </ion-col>
         <ion-col>
           <div>
@@ -68,27 +78,32 @@
           </div>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf="form.s2s">
+      <ion-row *ngIf="showS2sField">
         <ion-col>
           <ion-input 
-            [(ngModel)]="form.s2sSummit" 
+            [(ngModel)]="form.chaserSummit" 
             type="text" 
             id="s2sInput" 
             (ionChange)="this.summitCheck($event)" 
-            placeholder="s2s Summit Reference">
+            placeholder="S2S Summit Reference">
           </ion-input>
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col>
-          <div>
-            <ion-item>
-              <ion-label>s2s</ion-label>
-              <ion-checkbox [(ngModel)]="form.s2s"></ion-checkbox>
-            </ion-item>
-          </div>
+        <ion-col size="8">
+          <ion-segment scrollable [(ngModel)]="logType" (ionChange)="changeType($event)">
+	    <ion-segment-button value="Activator">
+	      <ion-label>Act</ion-label>
+	    </ion-segment-button>
+	    <ion-segment-button value="Summit2Summit">
+	      <ion-label>S2S</ion-label>
+	    </ion-segment-button>
+	    <ion-segment-button value="Chaser">
+	      <ion-label>Cha</ion-label>
+	    </ion-segment-button>
+	  </ion-segment> 
         </ion-col>
-        <ion-col> 
+        <ion-col size="4"> 
           <ion-button color="secondary" expand="block" shape="round" strong="true" (click)="logQso()">
             Add QSO
           </ion-button>

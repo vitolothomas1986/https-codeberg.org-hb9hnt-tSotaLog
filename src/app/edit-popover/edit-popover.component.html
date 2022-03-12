@@ -30,10 +30,19 @@
   </ion-item>
 
   <ion-item>
-    <ion-label position="floating">Summit</ion-label>
+    <ion-label position="floating">My Summit</ion-label>
     <ion-input
       type="text"
-      [(ngModel)]="qsoParams.summit"
+      [(ngModel)]="qsoParams.activatorSummit"
+      (ionChange)="summitCheck($event)">
+    </ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Other Summit</ion-label>
+    <ion-input
+      type="text"
+      [(ngModel)]="qsoParams.chaserSummit"
       (ionChange)="summitCheck($event)">
     </ion-input>
   </ion-item>
@@ -83,20 +92,6 @@
     <ion-input
       type="text"
       [(ngModel)]="qsoParams.comment">
-    </ion-input>
-  </ion-item>
-            
-  <ion-item>
-    <ion-label>s2s</ion-label>
-    <ion-checkbox [(ngModel)]="qsoParams.s2s"></ion-checkbox>
-  </ion-item>
-          
-  <ion-item *ngIf="qsoParams.s2s">
-    <ion-label position="floating">s2s Summit</ion-label>
-    <ion-input 
-      type="text" 
-      [(ngModel)]="qsoParams.s2sSummit" 
-      (ionChange)="summitCheck($event)">
     </ion-input>
   </ion-item>
 </ion-content>

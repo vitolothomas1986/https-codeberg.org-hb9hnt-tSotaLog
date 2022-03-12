@@ -328,10 +328,6 @@ export class Tab2Page {
     let ownCall = this.settings.opData.callsign;
     let sotaCsvString = '';
 
-    if (this.settings.exportSettings.addPortable) {
-      ownCall += "/P";
-    }
-
     // SotaData expects the CSV to be in chronological order
     qsosToExport.sort((qsoA, qsoB) => {
       const timeA = new Date(`${qsoA.date}T${qsoA.time}Z`);
@@ -342,23 +338,31 @@ export class Tab2Page {
     });
     
     for (const qso of qsosToExport) {
+      let callUsed = ownCall;
+      if (this.settings.exportSettings.addPortable && qso.activatorSummit != '') {
+        callUsed += "/P";
+      }
+
       let newLine = 'V2,';
       
-      newLine += `${ownCall},${qso.summit},`;
+      newLine += `${callUsed},${qso.activatorSummit},`;
       newLine += `${qso.date},${qso.time},`;
       newLine += `${qso.band}Mhz,${qso.mode},${qso.call},`;
-      newLine += `${qso.s2sSummit},"${qso.comment}`;
+      newLine += `${qso.chaserSummit},"${qso.comment}`;
 
       if (includeRst && qso.rstGiven) {
-        newLine += ` r${qso.rstGiven}`;
+        newLine += `${newLine.slice(-1) != '"' && newLine.slice(-1) != ' ' ? " " : ""}`
+        newLine += `r${qso.rstGiven}`;
       }
 
       if (includeRst && qso.rstReceived) {
-        newLine += ` s${qso.rstReceived}`;
+        newLine += `${newLine.slice(-1) != '"' && newLine.slice(-1) != ' ' ? " " : ""}`
+        newLine += `s${qso.rstReceived}`;
       }
 
-      if (includeS2s && qso.s2s) {
-        newLine += ` S2S ${qso.s2sSummit}`;
+      if (includeS2s && qso.chaserSummit != '' && qso.activatorSummit != '') {
+        newLine += `${newLine.slice(-1) != '"' && newLine.slice(-1) != ' ' ? " " : ""}`
+        newLine += `S2S ${qso.chaserSummit}`;
       }
 
       newLine += '"\r\n';
