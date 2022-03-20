@@ -62,7 +62,14 @@ Then:
 sudo npm i -g @ionic/cli -g cordova -g native-run -g cordova-res
 npm install
 ionic cordova resources
-ionic cordova emulate --livereload
+# Debug in browser without Cordova functionality
+ionic serve --livereload
+
+# Run in emulator
+ionic cordova run android
+
+# Build apk
+ionic cordova build android
 ```
 
 ## Impressum
