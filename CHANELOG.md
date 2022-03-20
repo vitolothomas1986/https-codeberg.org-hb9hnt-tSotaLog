@@ -6,7 +6,13 @@ hat to write down somewhere that I don't forget them (i.e. here).
 * Provide a call sign completion for known call signs. i.e. if you type 'hnt' 
   tSotaLog should suggest HB9HNT if you already made contact in an earlier QSO.
 
+* Add a summit database to display summit names
+
 # Version 0.2.0
+
+* The option to add a `/P` to the callsign now adds the `/P` to every operator
+  that is standing on a summit, depending on whether it's a chaser, activator
+  or s2s log.
 
 * Change the layout to the mode selection so that you don't have to click ok to 
   select a mode.
@@ -17,7 +23,7 @@ hat to write down somewhere that I don't forget them (i.e. here).
   This way you'll be able to address known contacts by name.
 
 * Provide a way to log as a chaser. (Limitation: At this point 
-  it won't add a `/P` to you call on a chaser log.)
+  it won't add a `/P` or a `/M` to you call on a chaser log if requred.)
 
 # Version 0.1.0
 
