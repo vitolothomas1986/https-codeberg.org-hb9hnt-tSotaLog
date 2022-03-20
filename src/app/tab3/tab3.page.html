@@ -30,12 +30,12 @@
 
         <ion-item lines="full">
           <ion-icon slot="start" name="call"></ion-icon>
-          <input type="text" slot="end" [(ngModel)]="settings.opData.callsign" (click)="saveOpSettingsToStorage()" placeholder="Callsign"> 
+          <input type="text" slot="end" [(ngModel)]="settings.opData.callsign" (change)="saveOpSettingsToStorage()" placeholder="Callsign"> 
         </ion-item>
 
         <ion-item lines="full">
           <ion-icon slot="start" name="person"></ion-icon>
-          <input type="text" slot="end" [(ngModel)]="settings.opData.name" (click)="saveOpSettingsToStorage()" placeholder="Name"> 
+          <input type="text" slot="end" [(ngModel)]="settings.opData.name" (change)="saveOpSettingsToStorage()" placeholder="Name"> 
         </ion-item>
 
         <ion-item-divider>
@@ -61,7 +61,7 @@
         <ion-item lines="full">
           <ion-icon slot="start" name="bonfire"></ion-icon>
           <ion-label>
-            Add portable suffix <code>/P</code> to your callsign
+            Add portable suffix <code>/P</code> to operator a summit 
           </ion-label>
           <ion-toggle [(ngModel)]="settings.exportSettings.addPortable" id="addportabletoggle" (ionChange)="toggleExportSettings()" slot="end"></ion-toggle>
         </ion-item>

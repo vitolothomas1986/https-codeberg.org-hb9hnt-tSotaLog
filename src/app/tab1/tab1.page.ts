@@ -1,10 +1,11 @@
 import { GlobalSettings } from './../globalsettings';
 import { Component } from '@angular/core';
-import { Storage } from '@ionic/storage';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { PopoverController } from '@ionic/angular';
 import { EditPopoverComponent } from '../edit-popover/edit-popover.component';
 import { ToastController } from '@ionic/angular';
+import { Qso } from '../../types'
+import { StorageService } from '../storage.service';
 
 
 @Component({
@@ -19,10 +20,14 @@ export class Tab1Page {
   logType: string;
   settings: GlobalSettings;
 
-  constructor(private storage: Storage, private globalSettings: GlobalSettings,
-              private statusBar: StatusBar, public popoverController: PopoverController, public toastController: ToastController) {
+  constructor(
+    private globalSettings: GlobalSettings,
+    private statusBar: StatusBar,
+    public popoverController: PopoverController,
+    public toastController: ToastController,
+    private storageService: StorageService) {
 
-    this.storage.get('qsos').then((value) => {
+    this.storageService.get('qsos').then((value) => {
 
       if ((value != null) && (value !== undefined)) {
 
@@ -41,7 +46,7 @@ export class Tab1Page {
     // Possible types are:
     // Activator, Summit2Summit, Chaser
     // TODO: Don't hardcode the log types
-    this.logType = "Activator"
+    this.logType = 'Activator';
 
     this.settings = globalSettings;
     this.settings.ready.then(() => {
@@ -68,33 +73,42 @@ export class Tab1Page {
     time: undefined,
     date: undefined,
     call: '',
-    rstGiven: '',
-    rstReceived: '',
+    rstTx: '',
+    rstRx: '',
     comment: '',
   };
 
   get showS2sField() {
-    return this.logType == "Summit2Summit";
+    return this.logType === 'Summit2Summit';
   }
 
   // Allow user to enter summit reference without the slash and the dash
   // all lowercase
   summitCheck(event) {
     const regex = /([A-Za-z]{2})\/?([A-Za-z]{2})-?([0-9]{3})/;
-    const newString = event.target.value.replace(regex, "$1/$2-$3").toUpperCase();
+    const newString = event.target.value.replace(regex, '$1/$2-$3').toUpperCase();
     event.target.value = newString;
 
   }
 
-  callCheck(event) {
+  async callCheck(event) {
     this.form.call = event.target.value.toUpperCase();
+
+    // Get cache if there is any. Otherwise this will return
+    // an empty string
+    const cachedName = await this.storageService.getFromCache(this.form.call);
+    if (!this.form.comment.includes(cachedName)) {
+      this.form.comment = cachedName;
+    }
   }
 
   logQso() {
-    const newQso = Object.assign({}, this.form); // copy content of object, don't link object itself!
-    
+    const newQso:Qso = {
+      ...this.form
+    }
+
     const now = new Date();
-    if (newQso.time == undefined) {
+    if (newQso.time === undefined) {
       const timeToStringOpts = {
         hour: '2-digit',
         minute: '2-digit',
@@ -105,13 +119,18 @@ export class Tab1Page {
       newQso.time = now.toLocaleTimeString([], timeToStringOpts);
     }
 
-    if (newQso.date == undefined) {
-      newQso.date = now.toISOString().split("T")[0];
+    if (newQso.date === undefined) {
+      newQso.date = now.toISOString().split('T')[0];
     }
- 
+
     this.settings.recentQsos.unshift(newQso);
 
-    this.storage.set('qsos', this.settings.recentQsos);
+    this.storageService.set('qsos', this.settings.recentQsos);
+
+    // Handle call sign cache
+    if (newQso.comment.length > 0) {
+      this.storageService.saveInCache(newQso.call, newQso.comment);
+    }
 
     this.resetForm();
  }
@@ -121,23 +140,23 @@ export class Tab1Page {
     this.form.time = undefined;
     this.form.date = undefined;
     this.form.call = '';
-    this.form.rstGiven = '';
-    this.form.rstReceived = '';
+    this.form.rstTx = '';
+    this.form.rstRx = '';
     this.form.comment = '';
     this.form.chaserSummit = '';
 
     // Set back to Activator log
-    this.logType = "Activator";
+    this.logType = 'Activator';
   }
 
-  changeType(event) {
-    // If we change the type we have to reset 
+  changeType() {
+    // If we change the type we have to reset
     // some summit fields that are not displayed
     switch (this.logType) {
-      case "Activator":
+      case 'Activator':
         this.form.chaserSummit = '';
         break;
-      case "Chaser":
+      case 'Chaser':
         this.form.activatorSummit = '';
         break;
     }
@@ -146,7 +165,7 @@ export class Tab1Page {
   async deleteQso(index: number) {
 
     const deletedQso = this.settings.recentQsos.splice(index, 1);
-    this.storage.set('qsos', this.settings.recentQsos);
+    this.storageService.set('qsos', this.settings.recentQsos);
 
     const toast = await this.toastController.create({
       message: 'QSO deleted',
@@ -157,7 +176,7 @@ export class Tab1Page {
           text: 'Undo',
           handler: () => {
             this.settings.recentQsos.splice(index, 0, deletedQso[0]);
-            this.storage.set('qsos', this.settings.recentQsos);
+            this.storageService.set('qsos', this.settings.recentQsos);
           }
         }
       ],
@@ -181,7 +200,7 @@ export class Tab1Page {
     popover.onDidDismiss().then(data => {
       if (data.data) { // flag is set by save button on popover
         Object.assign(this.settings.recentQsos[qsoNumber], editedQso);
-        this.storage.set('qsos', this.settings.recentQsos);
+        this.storageService.set('qsos', this.settings.recentQsos);
       }
     });
 
