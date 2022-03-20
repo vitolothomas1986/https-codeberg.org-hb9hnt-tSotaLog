@@ -42,12 +42,9 @@ If it is latter try to change the storage permissions for the app in the Android
 
 ### Can I create a chaser log?
 
-Officially creating a chaser log is not supported (yet). However, if you create a summit-to-summit
-log and leave your own summit reference empty, SotaData will import this log as a chaser log from
-the exported CSV file.
+You will but you have to wait for release 0.2.0
 
-
-## Developing and Debuggins
+## Developing and Debuggin
 
 ### Setting everything up on Linux
 
