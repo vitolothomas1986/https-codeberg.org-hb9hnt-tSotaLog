@@ -7,9 +7,10 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { IonicStorageModule } from '@ionic/storage';
+import { Storage } from '@ionic/storage-angular';
 import { QsoEditModalPageModule } from './qso-edit-modal/qso-edit-modal.module';
 import { EditPopoverComponent } from './edit-popover/edit-popover.component';
+import { StorageService } from './storage.service';
 import { FormsModule } from '@angular/forms';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
@@ -18,7 +19,7 @@ import { File } from '@ionic-native/file/ngx';
 @NgModule({
   declarations: [AppComponent, EditPopoverComponent],
   entryComponents: [EditPopoverComponent],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, IonicStorageModule.forRoot(), QsoEditModalPageModule, FormsModule],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, QsoEditModalPageModule, FormsModule],
   providers: [
     StatusBar,
     SplashScreen,
@@ -26,6 +27,8 @@ import { File } from '@ionic-native/file/ngx';
     Clipboard,
     SocialSharing,
     File,
+    Storage,
+    StorageService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

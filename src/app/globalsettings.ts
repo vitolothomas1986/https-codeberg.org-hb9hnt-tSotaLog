@@ -1,14 +1,14 @@
-import { waitForAsync } from '@angular/core/testing';
 import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage';
+import { StorageService } from './storage.service';
+import { Qso } from '../types';
 
 
 @Injectable()
 export class GlobalSettings {
 
   darkmode: boolean;
-  settingsStorage: Storage;
-  ready: any;
+  settingsStorage: StorageService;
+  ready: Promise<void>;
 
   opData: {
     callsign: string,
@@ -21,12 +21,11 @@ export class GlobalSettings {
     addPortable: boolean
   };
 
-  recentQsos: Array<any>;
+  recentQsos: Array<Qso>;
 
   modes: Array<string>;
 
-  constructor(private storage: Storage) {
-
+  constructor(private storage: StorageService) {
     this.opData = {
       callsign: '',
       name: ''
@@ -38,11 +37,11 @@ export class GlobalSettings {
       addPortable: true
     };
 
+    this.modes = ['FM', 'SSB', 'CW', 'DATA', 'AM', 'Other'];
+    this.recentQsos = [];
+
     this.settingsStorage = storage;
     this.ready = this.initialize();
-
-    this.modes = ["FM", "SSB", "CW", "DATA", "AM", "Other"];
-
   }
 
   async initialize() {
@@ -76,16 +75,15 @@ export class GlobalSettings {
     try {
       const result = await this.storage.get('export-settings');
       if ((result != null) && (result !== undefined)) {
-
         this.exportSettings = result;
-
       }
     } catch (error) {
       console.log(error);
     }
-
   }
 
+  // This function predates the storage service and should
+  // eventually be integrated in the storage service....
   async saveToStorage(key: string, value: any) {
     try {
       this.settingsStorage.set(key, value);

@@ -31,8 +31,15 @@
         </ion-col>
         <ion-col>
           <div>
-            <ion-select [(ngModel)]="form.mode" placeholder="Mode">
-              <ion-select-option *ngFor="let mode of settings.modes" value="{{ mode }}">{{ mode }}</ion-select-option>
+            <ion-select 
+              [(ngModel)]="form.mode" 
+              placeholder="Mode"
+              interface="action-sheet">
+              <ion-select-option 
+                *ngFor="let mode of settings.modes" 
+                value="{{ mode }}">
+                {{ mode }}
+              </ion-select-option>
             </ion-select>
           </div>
         </ion-col>
@@ -61,12 +68,12 @@
      <ion-row class="ion-align-items-stretch">
         <ion-col>
           <div>
-            <input [(ngModel)]="form.rstGiven" type="number" placeholder="RST TX">
+            <input [(ngModel)]="form.rstTx" type="number" placeholder="RST TX">
           </div>
         </ion-col>
         <ion-col>
           <div>
-            <input [(ngModel)]="form.rstReceived" type="number" placeholder="RST RX">
+            <input [(ngModel)]="form.rstRx" type="number" placeholder="RST RX">
           </div>
         </ion-col>
      </ion-row>
@@ -74,7 +81,7 @@
       <ion-row class="ion-align-items-stretch">
         <ion-col>
           <div>
-            <input [(ngModel)]="form.comment" type="text" placeholder="Comment">
+            <input [(ngModel)]="form.comment" type="text" placeholder="Name/Comment">
           </div>
         </ion-col>
       </ion-row>

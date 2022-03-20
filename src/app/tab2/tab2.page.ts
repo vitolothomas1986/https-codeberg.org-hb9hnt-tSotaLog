@@ -1,6 +1,4 @@
-import { waitForAsync } from '@angular/core/testing';
 import { Component } from '@angular/core';
-import { Storage } from '@ionic/storage';
 import { AlertController } from '@ionic/angular';
 import { ModalController} from '@ionic/angular';
 import { QsoEditModalPage } from './../qso-edit-modal/qso-edit-modal.page';
@@ -10,6 +8,8 @@ import { ToastController } from '@ionic/angular';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { GlobalSettings } from './../globalsettings';
+import { Qso, QsoHistory } from './../../types'
+import { StorageService } from '../storage.service';
 
 @Component({
   selector: 'app-tab2',
@@ -18,15 +18,15 @@ import { GlobalSettings } from './../globalsettings';
 })
 export class Tab2Page {
 
-  qsoStorage: Storage;
-  qsoHistory: Array<any>;
+  qsoStorage: StorageService;
+  qsoHistory: Array<QsoHistory>;
   settings: GlobalSettings;
-  recentQsos: Array<any>;
+  recentQsos: Array<Qso>;
 
   constructor(
     public toastController: ToastController,
     public modalCtrl: ModalController,
-    private storage: Storage, 
+    private storage: StorageService, 
     private alertControl: AlertController, 
     private routerOutlet: IonRouterOutlet, 
     private clipboard: Clipboard, 
@@ -60,7 +60,6 @@ export class Tab2Page {
     name: '',
     timeSaved: '',
     qsoList: [],
-    operator: '',
   };
 
   async archiveQsoDialog() {
@@ -187,7 +186,7 @@ export class Tab2Page {
         },
         {
           text: 'Copy to clipboard',
-          handler: (alertData) => {
+          handler: () => {
             this.copyToClipboard(index);
           }
         },
@@ -201,7 +200,7 @@ export class Tab2Page {
         */
          {
           text: 'Save file',
-          handler: (alertData) => {
+          handler: () => {
             this.saveFile(index);
           }
         }
@@ -284,11 +283,11 @@ export class Tab2Page {
       await this.file.checkDir(this.file.externalRootDirectory, 'tSotaLog');
       directory = `${this.file.externalRootDirectory}/tSotaLog`;
     } catch {
-      let directory = this.file.externalDataDirectory;
+      directory = this.file.externalDataDirectory;
     }
 
     try {
-      const res = await this.file.writeFile(directory, filename, csv, { replace: true });
+      await this.file.writeFile(directory, filename, csv, { replace: true });
       message = `File saved to '${directory.replace(/^file:\/\//, "")}/${filename}'`;
     } catch {
       message = "ERROR: Failed to save file!"
@@ -320,25 +319,27 @@ export class Tab2Page {
   }
   */
 
-  generateSotaCsv(index: number) {
+  generateSotaCsv(index: number): string {
 
     const qsosToExport = this.qsoHistory[index].qsoList;
     const includeRst = this.settings.exportSettings.rstComment;
     const includeS2s = this.settings.exportSettings.s2sComment;
-    let ownCall = this.settings.opData.callsign;
+    const ownCall = this.settings.opData.callsign;
     let sotaCsvString = '';
 
     // SotaData expects the CSV to be in chronological order
     qsosToExport.sort((qsoA, qsoB) => {
       const timeA = new Date(`${qsoA.date}T${qsoA.time}Z`);
       const timeB = new Date(`${qsoB.date}T${qsoB.time}Z`);
-      if (timeA > timeB) { return 1 };
-      if (timeA < timeB) { return -1 };
+      if (timeA > timeB) { return 1 }
+      if (timeA < timeB) { return -1 }
       return 0;
     });
     
     for (const qso of qsosToExport) {
       let callUsed = ownCall;
+      
+      // Add a /P in case of a activator log.
       if (this.settings.exportSettings.addPortable && qso.activatorSummit != '') {
         callUsed += "/P";
       }
@@ -347,17 +348,26 @@ export class Tab2Page {
       
       newLine += `${callUsed},${qso.activatorSummit},`;
       newLine += `${qso.date},${qso.time},`;
-      newLine += `${qso.band}Mhz,${qso.mode},${qso.call},`;
-      newLine += `${qso.chaserSummit},"${qso.comment}`;
+      newLine += `${qso.band}Mhz,${qso.mode},`;
 
-      if (includeRst && qso.rstGiven) {
-        newLine += `${newLine.slice(-1) != '"' && newLine.slice(-1) != ' ' ? " " : ""}`
-        newLine += `r${qso.rstGiven}`;
+      // Add a /P in case of a chaser log.
+      if (this.settings.exportSettings.addPortable && qso.chaserSummit != '') {
+        newLine += `${qso.call}/P,`;
+      } else {
+        newLine += `${qso.call},`;
       }
 
-      if (includeRst && qso.rstReceived) {
+
+      newLine += `${qso.chaserSummit},"${qso.comment}`;
+
+      if (includeRst && qso.rstRx) {
         newLine += `${newLine.slice(-1) != '"' && newLine.slice(-1) != ' ' ? " " : ""}`
-        newLine += `s${qso.rstReceived}`;
+        newLine += `r${qso.rstRx}`;
+      }
+
+      if (includeRst && qso.rstTx) {
+        newLine += `${newLine.slice(-1) != '"' && newLine.slice(-1) != ' ' ? " " : ""}`
+        newLine += `s${qso.rstTx}`;
       }
 
       if (includeS2s && qso.chaserSummit != '' && qso.activatorSummit != '') {
