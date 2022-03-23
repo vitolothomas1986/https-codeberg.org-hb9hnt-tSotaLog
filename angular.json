@@ -38,8 +38,7 @@
               {
                 "input": "src/global.scss"
               }
-            ],
-            "scripts": []
+            ]
           },
           "configurations": {
             "production": {
@@ -52,7 +51,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -99,7 +97,6 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "styles": [],
-            "scripts": [],
             "assets": [
               {
                 "glob": "favicon.ico",
