@@ -6,7 +6,9 @@ export function getMainCall(call: string): string {
   const parts = call.split('/')
 
   // Just return the longes part of the array
-  return parts.reduce((last, next) => {
+  const mainCall = parts.reduce((last, next) => {
     return last.length >= next.length ? last : next;
   });
+
+  return mainCall.toUpperCase();
 }
