@@ -47,19 +47,23 @@
       <ion-row class="ion-align-items-stretch">
         <ion-col>
           <div>
-            <input 
+            <ion-input 
               [(ngModel)]="form.band" 
               type="number" 
               clear-input="true"
               placeholder="MHz">
+            </ion-input>
           </div>
         </ion-col>
         <ion-col>
           <div>
             <ion-input 
               [(ngModel)]="form.call" 
-              (ionChange)="this.callCheck($event)"
-              type="textVisiblePassword" 
+              (ionChange)="this.callCheck()"
+              class="call-input"
+              autocapitalize="characters"
+              type="text"
+              inputmode="textVisiblePassword" 
               placeholder="Callsign">
             </ion-input>
           </div>
@@ -68,12 +72,20 @@
      <ion-row class="ion-align-items-stretch">
         <ion-col>
           <div>
-            <input [(ngModel)]="form.rstTx" type="number" placeholder="RST TX">
+            <ion-input 
+              [(ngModel)]="form.rstTx" 
+              type="number" 
+              placeholder="RST TX">
+            </ion-input>
           </div>
         </ion-col>
         <ion-col>
           <div>
-            <input [(ngModel)]="form.rstRx" type="number" placeholder="RST RX">
+            <ion-input 
+              [(ngModel)]="form.rstRx" 
+              type="number" 
+              placeholder="RST RX">
+            </ion-input>
           </div>
         </ion-col>
      </ion-row>
@@ -81,7 +93,11 @@
       <ion-row class="ion-align-items-stretch">
         <ion-col>
           <div>
-            <input [(ngModel)]="form.comment" type="text" placeholder="Name/Comment">
+            <ion-input 
+              [(ngModel)]="form.comment" 
+              type="text" 
+              placeholder="Name/Comment">
+            </ion-input>
           </div>
         </ion-col>
       </ion-row>
@@ -98,7 +114,7 @@
       </ion-row>
       <ion-row>
         <ion-col size="8">
-          <ion-segment scrollable [(ngModel)]="logType" (ionChange)="changeType($event)">
+          <ion-segment scrollable [(ngModel)]="logType" (ionChange)="changeType()">
 	    <ion-segment-button value="Activator">
 	      <ion-label>Act</ion-label>
 	    </ion-segment-button>
