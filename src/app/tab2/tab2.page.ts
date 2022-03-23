@@ -26,11 +26,11 @@ export class Tab2Page {
   constructor(
     public toastController: ToastController,
     public modalCtrl: ModalController,
-    private storage: StorageService, 
-    private alertControl: AlertController, 
-    private routerOutlet: IonRouterOutlet, 
-    private clipboard: Clipboard, 
-    private socialSharing: SocialSharing, 
+    private storage: StorageService,
+    private alertControl: AlertController,
+    private routerOutlet: IonRouterOutlet,
+    private clipboard: Clipboard,
+    private socialSharing: SocialSharing,
     private file: File,
     private globalSettings: GlobalSettings) {
 
