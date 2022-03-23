@@ -3,10 +3,10 @@ import { AlertController } from '@ionic/angular';
 import { ModalController} from '@ionic/angular';
 import { QsoEditModalPage } from './../qso-edit-modal/qso-edit-modal.page';
 import { IonRouterOutlet } from '@ionic/angular';
-import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { Clipboard } from '@awesome-cordova-plugins/clipboard/ngx';
 import { ToastController } from '@ionic/angular';
-import { SocialSharing } from '@ionic-native/social-sharing/ngx';
-import { File } from '@ionic-native/file/ngx';
+import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
+import { File } from '@awesome-cordova-plugins/file/ngx';
 import { GlobalSettings } from './../globalsettings';
 import { Qso, QsoHistory } from './../../types'
 import { StorageService } from '../storage.service';

@@ -1,6 +1,6 @@
 import { GlobalSettings } from './../globalsettings';
 import { Component } from '@angular/core';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { StatusBar } from '@awesome-cordova-plugins/status-bar/ngx';
 import { PopoverController } from '@ionic/angular';
 import { EditPopoverComponent } from '../edit-popover/edit-popover.component';
 import { ToastController } from '@ionic/angular';

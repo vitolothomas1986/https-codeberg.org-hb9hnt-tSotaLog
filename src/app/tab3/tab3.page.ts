@@ -1,6 +1,6 @@
 import { GlobalSettings } from './../globalsettings';
 import { Component } from '@angular/core';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { StatusBar } from '@awesome-cordova-plugins/status-bar/ngx';
 import { PickerController } from '@ionic/angular';
 
 
