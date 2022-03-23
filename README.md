@@ -55,21 +55,33 @@ You need the following installed:
 * npm
 * Android tools including platform-tools. Android Studio should be ok, too.
 
-Then:
 
 
 ```bash
+# Default location of Android Studio's SDK
+export ANDROID_SDK_ROOT=~/Android/Sdk
+export PATH=$PATH:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools
+
 sudo npm i -g @ionic/cli -g cordova -g native-run -g cordova-res
 npm install
 ionic cordova resources
 # Debug in browser without Cordova functionality
 ionic serve --livereload
 
-# Run in emulator
+# Run in emulator or on a phone connected via ADB
 ionic cordova run android
 
 # Build apk
 ionic cordova build android
+```
+
+Create release APK
+```bash
+ionic cordova resources --cordova-res
+ionic cordova platform add android
+ionic cordova resources android --force
+ionic cordova build android --prod --release
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore build/outputs/apk/release/app-release-unsigned.apk alias_name
 ```
 
 ## Impressum

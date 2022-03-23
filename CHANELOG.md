@@ -25,6 +25,18 @@ hat to write down somewhere that I don't forget them (i.e. here).
 * Provide a way to log as a chaser. (Limitation: At this point 
   it won't add a `/P` or a `/M` to you call on a chaser log if requred.)
 
+* Fixed Issue #1: Cursor won't jump to the end of the callsign input when entering
+  lowercase letters at another position.
+
+* Updates several npm packages to newer version.
+
+* Bumped Android target and minimum SDK versions to work with newer package
+  versions.
+
+* Some code reogranisation
+
+* Fixed some minor layout issues
+
 # Version 0.1.0
 
 First version atfter forking from tSotaLog
