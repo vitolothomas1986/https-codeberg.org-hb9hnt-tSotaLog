@@ -18,6 +18,10 @@
     outline: none;
     border: solid 1px var(--ion-color-secondary);
   }
+
+  .call-input {
+    text-transform: uppercase;
+  }
   
   ::placeholder { // Chrome, Firefox, Opera, Safari 10.1+
     color: var(--ion-placeholder-color);
