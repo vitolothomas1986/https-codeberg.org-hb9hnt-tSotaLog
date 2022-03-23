@@ -7,7 +7,7 @@ import { Qso } from '../types';
 export class GlobalSettings {
 
   darkmode: boolean;
-  settingsStorage: StorageService;
+  storage: StorageService;
   ready: Promise<void>;
 
   opData: {
@@ -25,7 +25,7 @@ export class GlobalSettings {
 
   modes: Array<string>;
 
-  constructor(private storage: StorageService) {
+  constructor(private storageService: StorageService) {
     this.opData = {
       callsign: '',
       name: ''
@@ -40,7 +40,7 @@ export class GlobalSettings {
     this.modes = ['FM', 'SSB', 'CW', 'DATA', 'AM', 'Other'];
     this.recentQsos = [];
 
-    this.settingsStorage = storage;
+    this.storage = storageService;
     this.ready = this.initialize();
   }
 
@@ -64,9 +64,7 @@ export class GlobalSettings {
     try {
       const result = await this.storage.get('op-data');
       if ((result != null) && (result !== undefined)) {
-
         this.opData = result;
-
       }
     } catch (error) {
       console.log(error);
@@ -86,7 +84,7 @@ export class GlobalSettings {
   // eventually be integrated in the storage service....
   async saveToStorage(key: string, value: any) {
     try {
-      this.settingsStorage.set(key, value);
+      this.storage.set(key, value);
     } catch (error) {
       console.log(error);
     }

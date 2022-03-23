@@ -9,9 +9,10 @@ import { getMainCall } from '../helpers';
 export class StorageService {
   private _storage: Storage | null = null;
   private _callsignCache: Storage | null = null;
+  ready: Promise<void>
 
   constructor(private storage: Storage) {
-    this.init();
+    this.ready = this.init();
   }
 
   async init() {
@@ -25,6 +26,7 @@ export class StorageService {
     });
 
     await this._callsignCache.create();
+
   }
 
   public set(key: string, value: any) {
@@ -32,6 +34,7 @@ export class StorageService {
   }
 
   public async get(key: string) {
+    await this.ready;
     const value = await this._storage?.get(key);
     return value;
   }

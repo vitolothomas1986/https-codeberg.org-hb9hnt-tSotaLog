@@ -19,6 +19,8 @@ export class Tab1Page {
   darkmode: boolean;
   logType: string;
   settings: GlobalSettings;
+  ready: Promise<void>;
+  storage: StorageService;
 
   constructor(
     private globalSettings: GlobalSettings,
@@ -27,42 +29,42 @@ export class Tab1Page {
     public toastController: ToastController,
     private storageService: StorageService) {
 
-    this.storageService.get('qsos').then((value) => {
-
-      if ((value != null) && (value !== undefined)) {
-
-        this.settings.recentQsos = value;
-
-      } else {
-
-        this.settings.recentQsos = [];
-      }
-
-    }).catch((error) => {
-      console.log(error);
-      this.settings.recentQsos = [];
-    });
-
+    this.storage = storageService;
+    
     // Possible types are:
     // Activator, Summit2Summit, Chaser
     // TODO: Don't hardcode the log types
     this.logType = 'Activator';
-
     this.settings = globalSettings;
-    this.settings.ready.then(() => {
+    
+    this.ready = this.init();
+  }
 
-      if (this.settings.darkmode === true) {
-        document.body.classList.add('dark');
-        this.statusBar.backgroundColorByHexString('#121212');
-        this.statusBar.styleBlackOpaque();
-
+  async init() {
+ 
+    try {
+      const qsos = await this.storage.get('qsos')
+      if ((qsos != null) && (qsos !== undefined)) {
+        this.settings.recentQsos = qsos;
       } else {
-        this.statusBar.backgroundColorByName('white');
-        this.statusBar.styleDefault();
+        this.settings.recentQsos = [];
       }
+    } catch (error) {
+      console.log(error);
+      this.settings.recentQsos = [];
+    }
+ 
+    await this.settings.ready
+    
+    if (this.settings.darkmode === true) {
+      document.body.classList.add('dark');
+      this.statusBar.backgroundColorByHexString('#121212');
+      this.statusBar.styleBlackOpaque();
 
-    });
-
+    } else {
+      this.statusBar.backgroundColorByName('white');
+      this.statusBar.styleDefault();
+    }
   }
 
   form = {
@@ -91,12 +93,10 @@ export class Tab1Page {
 
   }
 
-  async callCheck(event) {
-    this.form.call = event.target.value.toUpperCase();
-
+  async callCheck() {
     // Get cache if there is any. Otherwise this will return
     // an empty string
-    const cachedName = await this.storageService.getFromCache(this.form.call);
+    const cachedName = await this.storage.getFromCache(this.form.call);
     if (!this.form.comment.includes(cachedName)) {
       this.form.comment = cachedName;
     }
@@ -106,6 +106,10 @@ export class Tab1Page {
     const newQso:Qso = {
       ...this.form
     }
+
+    // Capitalize because up to here it's only displayed in
+    // upper case using css
+    newQso.call = newQso.call.toUpperCase();
 
     const now = new Date();
     if (newQso.time === undefined) {
@@ -125,11 +129,11 @@ export class Tab1Page {
 
     this.settings.recentQsos.unshift(newQso);
 
-    this.storageService.set('qsos', this.settings.recentQsos);
+    this.storage.set('qsos', this.settings.recentQsos);
 
     // Handle call sign cache
     if (newQso.comment.length > 0) {
-      this.storageService.saveInCache(newQso.call, newQso.comment);
+      this.storage.saveInCache(newQso.call, newQso.comment);
     }
 
     this.resetForm();
@@ -165,7 +169,7 @@ export class Tab1Page {
   async deleteQso(index: number) {
 
     const deletedQso = this.settings.recentQsos.splice(index, 1);
-    this.storageService.set('qsos', this.settings.recentQsos);
+    this.storage.set('qsos', this.settings.recentQsos);
 
     const toast = await this.toastController.create({
       message: 'QSO deleted',
@@ -176,7 +180,7 @@ export class Tab1Page {
           text: 'Undo',
           handler: () => {
             this.settings.recentQsos.splice(index, 0, deletedQso[0]);
-            this.storageService.set('qsos', this.settings.recentQsos);
+            this.storage.set('qsos', this.settings.recentQsos);
           }
         }
       ],
@@ -200,7 +204,7 @@ export class Tab1Page {
     popover.onDidDismiss().then(data => {
       if (data.data) { // flag is set by save button on popover
         Object.assign(this.settings.recentQsos[qsoNumber], editedQso);
-        this.storageService.set('qsos', this.settings.recentQsos);
+        this.storage.set('qsos', this.settings.recentQsos);
       }
     });
 
