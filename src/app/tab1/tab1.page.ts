@@ -22,51 +22,6 @@ export class Tab1Page {
   ready: Promise<void>;
   storage: StorageService;
 
-  constructor(
-    private globalSettings: GlobalSettings,
-    private statusBar: StatusBar,
-    public popoverController: PopoverController,
-    public toastController: ToastController,
-    private storageService: StorageService) {
-
-    this.storage = storageService;
-    
-    // Possible types are:
-    // Activator, Summit2Summit, Chaser
-    // TODO: Don't hardcode the log types
-    this.logType = 'Activator';
-    this.settings = globalSettings;
-    
-    this.ready = this.init();
-  }
-
-  async init() {
- 
-    try {
-      const qsos = await this.storage.get('qsos')
-      if ((qsos != null) && (qsos !== undefined)) {
-        this.settings.recentQsos = qsos;
-      } else {
-        this.settings.recentQsos = [];
-      }
-    } catch (error) {
-      console.log(error);
-      this.settings.recentQsos = [];
-    }
- 
-    await this.settings.ready
-    
-    if (this.settings.darkmode === true) {
-      document.body.classList.add('dark');
-      this.statusBar.backgroundColorByHexString('#121212');
-      this.statusBar.styleBlackOpaque();
-
-    } else {
-      this.statusBar.backgroundColorByName('white');
-      this.statusBar.styleDefault();
-    }
-  }
-
   form = {
     band: '',
     mode: '',
@@ -79,6 +34,51 @@ export class Tab1Page {
     rstRx: '',
     comment: '',
   };
+
+  constructor(
+    private globalSettings: GlobalSettings,
+    private statusBar: StatusBar,
+    public popoverController: PopoverController,
+    public toastController: ToastController,
+    private storageService: StorageService) {
+
+    this.storage = storageService;
+
+    // Possible types are:
+    // Activator, Summit2Summit, Chaser
+    // TODO: Don't hardcode the log types
+    this.logType = 'Activator';
+    this.settings = globalSettings;
+
+    this.ready = this.init();
+  }
+
+  async init() {
+
+    try {
+      const qsos = await this.storage.get('qsos')
+      if ((qsos != null) && (qsos !== undefined)) {
+        this.settings.recentQsos = qsos;
+      } else {
+        this.settings.recentQsos = [];
+      }
+    } catch (error) {
+      console.log(error);
+      this.settings.recentQsos = [];
+    }
+
+    await this.settings.ready
+
+    if (this.settings.darkmode === true) {
+      document.body.classList.add('dark');
+      this.statusBar.backgroundColorByHexString('#121212');
+      this.statusBar.styleBlackOpaque();
+
+    } else {
+      this.statusBar.backgroundColorByName('white');
+      this.statusBar.styleDefault();
+    }
+  }
 
   get showS2sField() {
     return this.logType === 'Summit2Summit';

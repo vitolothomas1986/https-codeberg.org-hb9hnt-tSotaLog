@@ -1,6 +1,6 @@
 import { GlobalSettings } from './../globalsettings';
 import { Component, OnInit } from '@angular/core';
-import { NavParams, PopoverController } from '@ionic/angular'; 
+import { NavParams, PopoverController } from '@ionic/angular';
 
 @Component({
   selector: 'app-edit-popover',
@@ -12,7 +12,11 @@ export class EditPopoverComponent implements OnInit {
   qsoParams: any;
   settings: GlobalSettings;
 
-  constructor( navParams: NavParams, private globalSettings: GlobalSettings, private popoverController: PopoverController) { 
+  constructor(
+    navParams: NavParams,
+    private globalSettings: GlobalSettings,
+    private popoverController: PopoverController
+  ) {
     this.qsoParams = navParams.data.editedQso;
     this.settings = globalSettings;
   }
@@ -22,7 +26,7 @@ export class EditPopoverComponent implements OnInit {
   // TODO: Don't duplicate those two functions.
   summitCheck(event) {
     const regex = /([A-Za-z]{2})\/?([A-Za-z]{2})-?([0-9]{3})/;
-    const newString = event.target.value.replace(regex, "$1/$2-$3").toUpperCase();
+    const newString = event.target.value.replace(regex, '$1/$2-$3').toUpperCase();
     event.target.value = newString;
   }
 
