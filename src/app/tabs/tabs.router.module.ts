@@ -38,6 +38,16 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'callsigns',
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('../callsigns/callsigns.module').then(m => m.CallsignsPageModule)
+          }
+        ]
+      },
+      {
         path: '',
         redirectTo: '/tabs/tab1',
         pathMatch: 'full'

@@ -1,0 +1,46 @@
+<ion-header class="ion-no-border">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-title>
+            Edit
+            <span *ngIf="!isNew">
+              &nbsp;{{ callsign.call }}
+            </span>
+          </ion-title>
+        </ion-col>
+        <ion-col>
+          <ion-button
+            color="secondary"
+            shape="round"
+            size="small"
+            strong="true"
+            expand="block"
+            (click)="dismissAndSave()">
+            Save
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+</ion-header>
+<ion-content>
+  <ion-item *ngIf="isNew">
+    <ion-label position="floating">
+      Callsign
+    </ion-label>
+    <ion-input
+      type="text"
+      [(ngModel)]="callsign.call"
+      (ionChange)="callCheck($event)">
+    </ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">
+      Name
+    </ion-label>
+    <ion-input
+      type="text"
+      [(ngModel)]="callsign.comment">
+    </ion-input>
+  </ion-item>
+</ion-content>

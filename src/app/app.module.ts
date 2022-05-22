@@ -10,6 +10,7 @@ import { AppComponent } from './app.component';
 import { Storage } from '@ionic/storage-angular';
 import { QsoEditModalPageModule } from './qso-edit-modal/qso-edit-modal.module';
 import { EditPopoverComponent } from './edit-popover/edit-popover.component';
+import { EditCallComponent } from './callsigns/edit-call/edit-call.component';
 import { StorageService } from './storage.service';
 import { FormsModule } from '@angular/forms';
 import { Clipboard } from '@awesome-cordova-plugins/clipboard/ngx';
@@ -18,8 +19,8 @@ import { File } from '@awesome-cordova-plugins/file/ngx';
 
 
 @NgModule({
-  declarations: [AppComponent, EditPopoverComponent],
-  entryComponents: [EditPopoverComponent],
+  declarations: [AppComponent, EditPopoverComponent, EditCallComponent],
+  entryComponents: [EditPopoverComponent, EditCallComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, QsoEditModalPageModule, FormsModule],
   providers: [
     StatusBar,
