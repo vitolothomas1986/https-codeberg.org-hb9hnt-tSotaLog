@@ -42,6 +42,23 @@ export class StorageService {
   //
   // Call sign cache handling
   //
+  get callsigns() {
+    // const keys = this._callsignCache?.keys();
+    const fullList = []
+    this._callsignCache.forEach((comment, call) => {
+      fullList.push({
+        call,
+        comment
+      })
+    })
+    return fullList;
+  }
+
+  async existsInCache(call: string): Promise<boolean> {
+    const keys = await this._callsignCache?.keys();
+    return keys.indexOf(call) >= 0;
+  }
+
   saveInCache(call: string, name: string) {
     const key = getMainCall(call);
 
@@ -59,6 +76,10 @@ export class StorageService {
     } catch {
       return '';
     }
+  }
+
+  deleteFromCache(call: string): void {
+    this._callsignCache?.remove(call);
   }
 
 }
