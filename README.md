@@ -57,9 +57,10 @@ You need the following installed:
 
 
 
+
 ```bash
-# Default location of Android Studio's SDK
-export ANDROID_SDK_ROOT=~/Android/Sdk
+# Correct if you do a default install of Android Studio. Change as appropriate
+export ANDROID_SDK_ROOT=$HOME/Android/Sdk/
 export PATH=$PATH:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools
 
 sudo npm i -g @ionic/cli -g cordova -g native-run -g cordova-res

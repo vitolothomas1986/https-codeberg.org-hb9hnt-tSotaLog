@@ -8,6 +8,13 @@ hat to write down somewhere that I don't forget them (i.e. here).
 
 * Add a summit database to display summit names
 
+# Next release
+
+* Added a tab to view and edit the callsign/name cache. It lets you add, delete
+  and modify entries by swiping left and right (which is a bit of a break in
+  the design, but the plan is to move everything in this direction to avoid
+  wasting screen estate on buttons.)
+
 # Version 0.2.0
 
 * The option to add a `/P` to the callsign now adds the `/P` to every operator
