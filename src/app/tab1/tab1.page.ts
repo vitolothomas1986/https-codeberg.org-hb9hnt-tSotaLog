@@ -118,7 +118,7 @@ export class Tab1Page {
         minute: '2-digit',
         timeZone: 'UTC',
         hour12: false
-      };
+      } as const;
 
       newQso.time = now.toLocaleTimeString([], timeToStringOpts);
     }

@@ -5,7 +5,7 @@ import { QsoEditModalPage } from './../qso-edit-modal/qso-edit-modal.page';
 import { IonRouterOutlet } from '@ionic/angular';
 import { Clipboard } from '@awesome-cordova-plugins/clipboard/ngx';
 import { ToastController } from '@ionic/angular';
-import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
+//import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import { GlobalSettings } from './../globalsettings';
 import { Qso, QsoHistory } from './../../types'
@@ -30,7 +30,7 @@ export class Tab2Page {
     private alertControl: AlertController,
     private routerOutlet: IonRouterOutlet,
     private clipboard: Clipboard,
-    private socialSharing: SocialSharing,
+    //private socialSharing: SocialSharing,
     private file: File,
     private globalSettings: GlobalSettings) {
 

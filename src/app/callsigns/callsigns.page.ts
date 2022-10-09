@@ -80,6 +80,10 @@ export class CallsignsPage implements OnInit {
     }
   }
 
+  async downloadList() {
+    return
+  }
+
   async editCall(callToEdit: {[key: string]: string}, event?) {
     const callsign = Object.assign({}, callToEdit);
     const editDialog = await this.popoverController.create({

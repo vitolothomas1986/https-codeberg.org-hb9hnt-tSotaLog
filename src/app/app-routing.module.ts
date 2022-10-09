@@ -6,7 +6,10 @@ const routes: Routes = [
     path: '',
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
   },
-  { path: 'qso-edit-modal', loadChildren: './qso-edit-modal/qso-edit-modal.module#QsoEditModalPageModule' },
+  { 
+    path: 'qso-edit-modal',
+    loadChildren: () => import('./qso-edit-modal/qso-edit-modal.module').then( m => m.QsoEditModalPageModule)
+  },
   {
     path: 'callsigns',
     loadChildren: () => import('./callsigns/callsigns.module').then( m => m.CallsignsPageModule)
