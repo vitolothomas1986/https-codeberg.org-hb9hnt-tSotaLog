@@ -3,6 +3,7 @@ import { Drivers } from '@ionic/storage';
 import { Storage } from '@ionic/storage-angular';
 import { getMainCall } from '../helpers';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -82,4 +83,13 @@ export class StorageService {
     this._callsignCache?.remove(call);
   }
 
+  async replaceCache(calls: [string, string][]) {
+    await this._callsignCache?.clear()
+    const promises = []
+    for (const [call, name] of calls) {
+      const action = this._callsignCache.set(call, name);
+      promises.push(action);
+    }
+    return Promise.all(promises);
+  }
 }

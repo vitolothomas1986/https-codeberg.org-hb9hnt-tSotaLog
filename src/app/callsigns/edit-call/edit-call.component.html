@@ -3,10 +3,12 @@
       <ion-row>
         <ion-col>
           <ion-title>
-            Edit
-            <span *ngIf="!isNew">
-              &nbsp;{{ callsign.call }}
+            <span *ngIf="isNew; else editCall">
+              New entry 
             </span>
+            <ng-template #editCall>
+              Edit &nbsp;{{ callsign.call }}
+            </ng-template>
           </ion-title>
         </ion-col>
         <ion-col>

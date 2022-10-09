@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { Chooser } from '@awesome-cordova-plugins/chooser/ngx';
 import { PopoverController } from '@ionic/angular';
 import { EditCallComponent } from './edit-call/edit-call.component';
 import { ToastController } from '@ionic/angular';
 import { StorageService } from '../storage.service';
+import { File } from '@awesome-cordova-plugins/file/ngx';
+import * as papa from 'papaparse';
 
 @Component({
   selector: 'app-callsigns',
@@ -17,7 +20,9 @@ export class CallsignsPage implements OnInit {
   constructor(
     public popoverController: PopoverController,
     public toastController: ToastController,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private chooser: Chooser,
+    private file: File
   ) {
     this.storage = storageService;
   }
@@ -37,6 +42,16 @@ export class CallsignsPage implements OnInit {
 
   async ionViewWillEnter() {
     const callsigns = await this.storage.callsigns;
+    callsigns.sort((callA, callB) => { 
+      // Since the keys are unique we don't have to check
+      // for equality. Returning 0 is not an option.
+      if (callA.call > callB.call) {
+        return 1;
+      }
+      else {
+        return -1;
+      }
+    });
     this.callsigns = callsigns;
   }
 
@@ -54,6 +69,15 @@ export class CallsignsPage implements OnInit {
       comment: '',
     }
     await this.editCall(callsign);
+  }
+
+  async uploadList() {
+    const file = await this.chooser.getFile(); 
+    const data = new TextDecoder().decode(file.data);
+    if (file) {
+      const parsedCsvData = papa.parse(data).data;
+      return this.storage.replaceCache(parsedCsvData as [string, string][]);
+    }
   }
 
   async editCall(callToEdit: {[key: string]: string}, event?) {

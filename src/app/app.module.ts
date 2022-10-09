@@ -14,6 +14,7 @@ import { EditCallComponent } from './callsigns/edit-call/edit-call.component';
 import { StorageService } from './storage.service';
 import { FormsModule } from '@angular/forms';
 import { Clipboard } from '@awesome-cordova-plugins/clipboard/ngx';
+import { Chooser } from '@awesome-cordova-plugins/chooser/ngx';
 import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 
@@ -27,6 +28,7 @@ import { File } from '@awesome-cordova-plugins/file/ngx';
     SplashScreen,
     GlobalSettings,
     Clipboard,
+    Chooser,
     SocialSharing,
     File,
     Storage,

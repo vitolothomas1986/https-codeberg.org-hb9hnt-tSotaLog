@@ -23,9 +23,20 @@
       </ion-item-options>
    </ion-item-sliding>
   </ion-list>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button color="primary" (click)="newCall()" >
-      <ion-icon name="add"></ion-icon>
+  <ion-fab vertical="bottom" horizontal="end">
+    <ion-fab-button>
+      <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
     </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button color="primary" (click)="newCall()" >
+        <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button color="primary" (click)="uploadList()" >
+        <ion-icon name="cloud-upload-outline"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button color="primary" (click)="downloadList()" >
+        <ion-icon name="cloud-download-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
   </ion-fab>
 </ion-content>
