@@ -6,6 +6,7 @@ import { EditPopoverComponent } from '../edit-popover/edit-popover.component';
 import { ToastController } from '@ionic/angular';
 import { Qso } from '../../types'
 import { StorageService } from '../storage.service';
+import { StationsService } from '../stations.service';
 
 
 @Component({
@@ -40,6 +41,7 @@ export class Tab1Page {
     private statusBar: StatusBar,
     public popoverController: PopoverController,
     public toastController: ToastController,
+    private stationsService: StationsService,
     private storageService: StorageService) {
 
     this.storage = storageService;
@@ -96,9 +98,10 @@ export class Tab1Page {
   async callCheck() {
     // Get cache if there is any. Otherwise this will return
     // an empty string
-    const cachedName = await this.storage.getFromCache(this.form.call);
-    if (!this.form.comment.includes(cachedName)) {
-      this.form.comment = cachedName;
+    const station = await this.stationsService.getStation(this.form.call);
+    const name = station?.name;
+    if (!this.form.comment.includes(name)) {
+      this.form.comment = name;
     }
   }
 
@@ -133,7 +136,10 @@ export class Tab1Page {
 
     // Handle call sign cache
     if (newQso.comment.length > 0) {
-      this.storage.saveInCache(newQso.call, newQso.comment);
+      this.stationsService.addOrUpdate({
+        callsign: newQso.call,
+        name: newQso.comment
+      });
     }
 
     this.resetForm();

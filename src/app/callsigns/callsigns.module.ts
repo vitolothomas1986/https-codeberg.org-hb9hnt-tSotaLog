@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import { IonicModule } from '@ionic/angular';
 
@@ -13,6 +14,7 @@ import { CallsignsPage } from './callsigns.page';
     CommonModule,
     FormsModule,
     IonicModule,
+    ScrollingModule,
     CallsignsPageRoutingModule
   ],
   declarations: [CallsignsPage]

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Drivers } from '@ionic/storage';
 import { Storage } from '@ionic/storage-angular';
 import { getMainCall } from '../helpers';
-
+import { GlobalSettings } from './globalsettings';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,10 @@ export class StorageService {
   private _callsignCache: Storage | null = null;
   ready: Promise<void>
 
-  constructor(private storage: Storage) {
+  constructor(
+    private storage: Storage,
+    private globalSettings: GlobalSettings
+  ) {
     this.ready = this.init();
   }
 
@@ -41,55 +44,24 @@ export class StorageService {
   }
 
   //
-  // Call sign cache handling
+  // Only call sign handling methods still
+  // required for data migration
   //
-  get callsigns() {
-    // const keys = this._callsignCache?.keys();
-    const fullList = []
-    this._callsignCache.forEach((comment, call) => {
-      fullList.push({
-        call,
-        comment
-      })
-    })
-    return fullList;
-  }
-
-  async existsInCache(call: string): Promise<boolean> {
+  async getStationData(): Promise<{callsign: string, name: string}[]> {
+    const data = [];
     const keys = await this._callsignCache?.keys();
-    return keys.indexOf(call) >= 0;
-  }
-
-  saveInCache(call: string, name: string) {
-    const key = getMainCall(call);
-
-    if (name.length > 0) {
-      this._callsignCache?.set(key, name);
-    }
-  }
-
-  async getFromCache(call: string): Promise<string> {
-    const key = getMainCall(call);
-
-    try {
+    for (const key of keys) {
       const value = await this._callsignCache?.get(key);
-      return value ? value : '';
-    } catch {
-      return '';
+      data.push({
+        callsign: key,
+        name: value
+      });
     }
+    console.log(data)
+    return data;
   }
 
-  deleteFromCache(call: string): void {
-    this._callsignCache?.remove(call);
-  }
-
-  async replaceCache(calls: [string, string][]) {
+  async clearStationData() {
     await this._callsignCache?.clear()
-    const promises = []
-    for (const [call, name] of calls) {
-      const action = this._callsignCache.set(call, name);
-      promises.push(action);
-    }
-    return Promise.all(promises);
   }
 }

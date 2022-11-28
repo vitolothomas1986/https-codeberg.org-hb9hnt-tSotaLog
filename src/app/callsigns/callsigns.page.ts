@@ -4,6 +4,7 @@ import { PopoverController } from '@ionic/angular';
 import { EditCallComponent } from './edit-call/edit-call.component';
 import { ToastController } from '@ionic/angular';
 import { StorageService } from '../storage.service';
+import { StationsService, Station } from '../stations.service';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import * as papa from 'papaparse';
 
@@ -15,12 +16,14 @@ import * as papa from 'papaparse';
 
 export class CallsignsPage implements OnInit {
   storage: StorageService;
-  callsigns: {[key: string]: string}[];
+  //stations: {[key: string]: string}[];
+  stations: Station[];
 
   constructor(
     public popoverController: PopoverController,
     public toastController: ToastController,
     private storageService: StorageService,
+    private stationsService: StationsService,
     private chooser: Chooser,
     private file: File
   ) {
@@ -37,46 +40,47 @@ export class CallsignsPage implements OnInit {
 
   async ngOnInit() {
     await this.storage.ready;
+    await this.stationsService.ready;
     this.ionViewWillEnter();
   }
 
   async ionViewWillEnter() {
-    const callsigns = await this.storage.callsigns;
-    callsigns.sort((callA, callB) => { 
-      // Since the keys are unique we don't have to check
-      // for equality. Returning 0 is not an option.
-      if (callA.call > callB.call) {
-        return 1;
-      }
-      else {
-        return -1;
-      }
-    });
-    this.callsigns = callsigns;
+    const stations = await this.stationsService.search('');
+    this.stations = stations;
   }
 
-  delete(callsign: {[key: string]: string}): void {
-    this.storage.deleteFromCache(callsign.call);
-    const index = this.callsigns.indexOf(callsign, 0);
+  async delete(station: Station): Promise<void> {
+    const index = this.stations.indexOf(station, 0);
+    await this.stationsService.delete(station.callsign);
     if (index > -1) {
-         this.callsigns.splice(index, 1);
+      this.stations.splice(index, 1);
+      // cdkFor requires the array to not change after its
+      // creation. So we have to create a copy
+      this.stations = [...this.stations];
     }
+  }
+
+  async updateSearch(event): Promise<void> {
+    const searchString = event.target.value;
+    const stations = await this.stationsService.search(searchString);
+
+    this.stations = stations;
   }
 
   async newCall() {
-    const callsign = {
-      call: '',
-      comment: '',
+    const station = {
+      callsign: '',
+      name: '',
     }
-    await this.editCall(callsign);
+    await this.editStation(station);
   }
 
   async uploadList() {
-    const file = await this.chooser.getFile(); 
+    const file = await this.chooser.getFile();
     const data = new TextDecoder().decode(file.data);
     if (file) {
       const parsedCsvData = papa.parse(data).data;
-      return this.storage.replaceCache(parsedCsvData as [string, string][]);
+      return this.stationsService.updateWithCSV(parsedCsvData as [string, string][]);
     }
   }
 
@@ -84,42 +88,36 @@ export class CallsignsPage implements OnInit {
     return
   }
 
-  async editCall(callToEdit: {[key: string]: string}, event?) {
-    const callsign = Object.assign({}, callToEdit);
+  async editStation(stationToEdit: Station, event?) {
+    // Create a copy of the station to edit
+    const station = Object.assign({}, stationToEdit);
     const editDialog = await this.popoverController.create({
       component: EditCallComponent,
-      componentProps: {callsign},
+      componentProps: {station},
       translucent: true
     });
 
-    editDialog.onDidDismiss().then(async data => {
-      if (data.data) { // flag is set by save button on popover
-        this.storage.saveInCache(callsign.call, callsign.comment);
-        Object.assign(callToEdit, callsign);
-        // event is undefined if we created a new entry. We only have to
-        // check whether it already exists if we create a new entry
-        if (!event && this.callsigns.indexOf(callsign) < 0) {
-          const exists = await this.storage.existsInCache(callsign.call);
-          if (exists) {
-            const call = this.callsigns.find(c => c.call === callsign.call);
-            call.comment = callsign.comment;
-            this.message(`${callsign.call} already exists, entry was replaced.`);
-          } else {
-            this.callsigns.push(callsign);
-          }
-        }
-      }
-    });
-
     if (event) {
-      // Without an event the edit was not triggered by the edit button
-      await editDialog.present();
-      return event.target.parentNode.parentNode.close()
-    } else {
-      return  await editDialog.present();
+      // If an event exists, the edit was triggered by the edit button
+      // and we have to close the slider again.
+      event.target.parentNode.parentNode.close()
     }
 
-    // Close the edit button slider
+    await editDialog.present();
 
+    const data = await editDialog.onDidDismiss()
+    if (data.data) { // flag is set by save button on popover
+      const createdNew = await this.stationsService.addOrUpdate(station);
+
+      // Copy data back to the original object
+      Object.assign(stationToEdit, station);
+
+      // event is undefined if we created a new entry. We only have to
+      // check whether it already exists if we create a new entry
+      if (!event && this.stations.indexOf(stationToEdit) < 0) {
+        this.stations = [stationToEdit, ...this.stations];
+        this.message(`${station.callsign} already exists, entry was updated.`);
+      }
+    }
   }
 }

@@ -9,6 +9,7 @@ export class GlobalSettings {
   darkmode: boolean;
   storage: StorageService;
   ready: Promise<void>;
+  callListMax: number; 
 
   opData: {
     callsign: string,
@@ -38,6 +39,7 @@ export class GlobalSettings {
     };
 
     this.modes = ['FM', 'SSB', 'CW', 'DATA', 'AM', 'Other'];
+    this.callListMax = 100;
     this.recentQsos = [];
 
     this.storage = storageService;

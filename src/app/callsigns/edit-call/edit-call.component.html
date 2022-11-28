@@ -7,7 +7,7 @@
               New entry 
             </span>
             <ng-template #editCall>
-              Edit &nbsp;{{ callsign.call }}
+              Edit &nbsp;{{ station.callsign }}
             </ng-template>
           </ion-title>
         </ion-col>
@@ -32,7 +32,7 @@
     </ion-label>
     <ion-input
       type="text"
-      [(ngModel)]="callsign.call"
+      [(ngModel)]="station.callsign"
       (ionChange)="callCheck($event)">
     </ion-input>
   </ion-item>
@@ -42,7 +42,7 @@
     </ion-label>
     <ion-input
       type="text"
-      [(ngModel)]="callsign.comment">
+      [(ngModel)]="station.name">
     </ion-input>
   </ion-item>
 </ion-content>

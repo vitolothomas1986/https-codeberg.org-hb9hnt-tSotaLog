@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavParams, PopoverController } from '@ionic/angular';
+import { Station } from '../../stations.service';
 
 @Component({
   selector: 'app-edit-call',
@@ -7,7 +8,7 @@ import { NavParams, PopoverController } from '@ionic/angular';
   styleUrls: ['./edit-call.component.scss'],
 })
 export class EditCallComponent implements OnInit {
-  callsign: {[key: string]: string};
+  station: Station;
   isNew = false;
 
   ngOnInit() {}
@@ -16,19 +17,15 @@ export class EditCallComponent implements OnInit {
     navParams: NavParams,
     private popoverController: PopoverController
   ) {
-    this.callsign = navParams.data.callsign;
-    this.isNew = this.callsign.call === '' ;
-    console.log(this.callsign, this.isNew)
+    this.station = navParams.data.station;
+    this.isNew = this.station.callsign === '' ;
   }
 
   callCheck(event) {
-    this.callsign.call = event.target.value.toUpperCase();
+    this.station.callsign = event.target.value.toUpperCase();
   }
-
 
   async dismissAndSave() {
     await this.popoverController.dismiss(true);
   }
-
-
 }

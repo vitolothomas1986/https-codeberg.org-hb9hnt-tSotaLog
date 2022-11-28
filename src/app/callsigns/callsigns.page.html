@@ -1,29 +1,33 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Previous Contacts</ion-title>
+    <ion-title>Contacts</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-label>Search callsign</ion-label>
+  <ion-input (ionChange)="updateSearch($event)"></ion-input>
+  <cdk-virtual-scroll-viewport itemSize="100" minBufferPx="900" maxBufferPx="1350">
   <ion-list>
-    <ion-item-sliding *ngFor="let callsign of callsigns">
+    <ion-item-sliding *cdkVirtualFor="let station of stations">
       <ion-item>
-        {{ callsign.call }}&nbsp;
-        <ion-text color="medium">{{ callsign.comment }}</ion-text>
+        {{ station.callsign }}&nbsp;
+        <ion-text color="medium">{{ station.name }}</ion-text>
       </ion-item>
       <ion-item-options side="start">
-        <ion-item-option color="primary" (click)="editCall(callsign, $event)">
+        <ion-item-option color="primary" (click)="editStation(station, $event)">
           <ion-icon name="open"></ion-icon>&nbsp;Edit
         </ion-item-option>
       </ion-item-options>
       <ion-item-options side="end">
-        <ion-item-option color="danger" (click)="delete(callsign)">
+        <ion-item-option color="danger" (click)="delete(station)">
           <ion-icon name="trash"></ion-icon>&nbsp;Delete
         </ion-item-option>
       </ion-item-options>
    </ion-item-sliding>
-  </ion-list>
-  <ion-fab vertical="bottom" horizontal="end">
+  </ion-list> 
+  </cdk-virtual-scroll-viewport>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button>
       <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
     </ion-fab-button>
