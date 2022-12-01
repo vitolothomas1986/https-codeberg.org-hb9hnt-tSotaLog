@@ -89,7 +89,7 @@ export class Tab1Page {
   // Allow user to enter summit reference without the slash and the dash
   // all lowercase
   summitCheck(event) {
-    const regex = /([A-Za-z]{2})\/?([A-Za-z]{2})-?([0-9]{3})/;
+    const regex = /^([A-Za-z0-9]{1,3})\/?([A-Za-z]{2})-?([0-9]{3}$)$/;
     const newString = event.target.value.replace(regex, '$1/$2-$3').toUpperCase();
     event.target.value = newString;
 
@@ -134,8 +134,10 @@ export class Tab1Page {
 
     this.storage.set('qsos', this.settings.recentQsos);
 
-    // Handle call sign cache
+    // If there is a comment, we add the Comment as
+    // name to the stations service
     if (newQso.comment.length > 0) {
+      console.log('ADD', newQso);
       this.stationsService.addOrUpdate({
         callsign: newQso.call,
         name: newQso.comment
