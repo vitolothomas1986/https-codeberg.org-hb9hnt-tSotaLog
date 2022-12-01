@@ -10,10 +10,30 @@ hat to write down somewhere that I don't forget them (i.e. here).
 
 # Next release
 
+* Add new tab to show stored names for callsigns. This change involves
+  * Allowing to import a names.csv file consisting of a column of callsigns 
+    and a column of names. (no header row required or supported)
+  * Support for names.csv export to a file.
+  * The user can edit or delete statins by swiping left or right.
+  * A station can be added manually without recording a QSO.
+  * The list of callsigns is currently limited to 100 at a time. Use the 
+    provided filter field to search for a station.
+  * The callsign store was implemented using indexeddb. Due to a lack of 
+    support for string matching in the way SQL does with `LIKE` only 
+    filtering for the first part of a callsign is supported.
+
+* Fix regex to also match regions that consist of somthing else than two 
+  characters. Now ea3bc002 also completed to EA3/BC-002.
+
+* Upgrade Angular to version 14
+
+* Upgrade Ionic to version 6
+
 * Added a tab to view and edit the callsign/name cache. It lets you add, delete
   and modify entries by swiping left and right (which is a bit of a break in
   the design, but the plan is to move everything in this direction to avoid
   wasting screen estate on buttons.)
+
 
 # Version 0.2.0
 
