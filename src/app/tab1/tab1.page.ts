@@ -165,9 +165,11 @@ export class Tab1Page {
     // some summit fields that are not displayed
     switch (this.logType) {
       case 'Activator':
+        this.form.activatorSummit = this.form.chaserSummit;
         this.form.chaserSummit = '';
         break;
       case 'Chaser':
+        this.form.chaserSummit = this.form.activatorSummit;
         this.form.activatorSummit = '';
         break;
     }

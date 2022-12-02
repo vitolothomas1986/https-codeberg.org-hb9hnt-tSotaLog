@@ -12,6 +12,11 @@ hat to write down somewhere that I don't forget them (i.e. here).
 
 # Version 0.3.0
 
+* BUGFIX Do not clear summit field when switching from activator to chaser log
+  and back. (Note however that switching from CHA to S2S moves the summit down
+  to the summit of the other station since this makes sense if you convert a 
+  chase to a S2S on the way because you reach the activation zone)
+
 * Add a counter to the recent QSO list on the first tab. This helps helps
   with estimating how well the current activation went so far. It also lists
   chaser, activator and s2s counts in case you have some chaser logs left from
