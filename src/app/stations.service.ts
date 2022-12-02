@@ -48,8 +48,8 @@ export class StationsService {
     const db = await openDB<StationsDB>('Stations', 1, {
       // For now we have to use arrow functions here to be able to
       // migrate the data from `this`
-      async upgrade(db, oldVersion, newVersion, transaction, event) { 
-        const store = db.createObjectStore('stations', {keyPath: 'callsign'});
+      upgrade(database, oldVersion, newVersion, transaction, event) {
+        const store = database.createObjectStore('stations', {keyPath: 'callsign'});
         store.createIndex('name', 'name');
       },
     });
@@ -58,7 +58,7 @@ export class StationsService {
   }
 
   /**
-   * Migrates data from the old storage. Can be removed in a few 
+   * Migrates data from the old storage. Can be removed in a few
    * versions
    */
   async migrateOldData() {
@@ -67,10 +67,10 @@ export class StationsService {
     if (oldData.length > 0) {
       const promises = []
       for (const station of oldData) {
-        promises.push(this.addOrUpdate(station as Station));
+        promises.push(this.add(station as Station, true));
       }
       await Promise.all(promises);
-      await this.storageService.clearStationData;
+      await this.storageService.clearStationData();
     }
   }
 
