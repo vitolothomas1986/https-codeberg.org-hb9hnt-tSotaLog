@@ -4,16 +4,7 @@ import { GlobalSettings } from './globalsettings';
 // Required temporarily for the data migration
 // Remove eventually.
 import { StorageService } from './storage.service';
-
-/**
- * Defines the type used to save stations in the database
- * This is exported because we need to be able to use it
- * outside this service to interact with the db.
- */
-export interface Station {
-  callsign: string,
-  name: string,
-}
+import { Station } from '../types';
 
 interface StationsDB extends DBSchema {
   stations: {

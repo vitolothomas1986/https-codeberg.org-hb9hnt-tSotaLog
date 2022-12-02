@@ -6,7 +6,8 @@ import { EditCallComponent } from './edit-call/edit-call.component';
 import { AndroidPermissions } from '@awesome-cordova-plugins/android-permissions/ngx';
 import { ToastController } from '@ionic/angular';
 import { StorageService } from '../storage.service';
-import { StationsService, Station } from '../stations.service';
+import { StationsService } from '../stations.service';
+import { Station } from '../../types';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import * as papa from 'papaparse';
 

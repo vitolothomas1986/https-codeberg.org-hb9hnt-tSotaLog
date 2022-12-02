@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavParams, PopoverController } from '@ionic/angular';
-import { Station } from '../../stations.service';
+import { Station } from '../../../types';
 
 @Component({
   selector: 'app-edit-call',
