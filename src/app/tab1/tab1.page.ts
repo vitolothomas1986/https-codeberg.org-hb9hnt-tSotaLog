@@ -100,7 +100,7 @@ export class Tab1Page {
     // an empty string
     const station = await this.stationsService.getStation(this.form.call);
     const name = station?.name;
-    if (!this.form.comment.includes(name)) {
+    if (name && this.form.comment === '') {
       this.form.comment = name;
     }
   }
