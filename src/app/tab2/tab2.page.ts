@@ -281,7 +281,7 @@ export class Tab2Page {
     const name = this.qsoHistory[index].name;
     const date = (new Date()).toISOString().split('T')[0];
     const filename = `${name}_${date}.${type}`;
-    const directory = this.file.dataDirectory;
+    const directory = this.file.externalDataDirectory;
     let message = '';
     let data;
     

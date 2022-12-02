@@ -91,7 +91,7 @@ export class CallsignsPage implements OnInit {
   async downloadList() {
     const date = (new Date()).toISOString().split('T')[0];
     const filename = `${date}_names.csv`;
-    const directory = this.file.dataDirectory;
+    const directory = this.file.externalDataDirectory;
     let message = '';
     let data = '';
 
