@@ -137,11 +137,10 @@ export class Tab1Page {
     // If there is a comment, we add the Comment as
     // name to the stations service
     if (newQso.comment.length > 0) {
-      console.log('ADD', newQso);
-      this.stationsService.addOrUpdate({
+      this.stationsService.add({
         callsign: newQso.call,
         name: newQso.comment
-      });
+      }, true);
     }
 
     this.resetForm();

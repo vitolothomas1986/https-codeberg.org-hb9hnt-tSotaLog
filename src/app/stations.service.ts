@@ -114,23 +114,41 @@ export class StationsService {
   }
 
   /**
-   * Adds or updates a station. If the callsign already exists in the
-   * database, it will be updated. Otherwise a new entry is created
+   * Returns the whole database.
+   * Use with care and mainly for exporting
    *
-   * @returns Promise<boolean> returns true if a new entry was 
-   *                           created and false if one was updated
+   * @returns Promise<Station[]> full database content;
    */
-  async addOrUpdate(station: Station): Promise<boolean> {
-    await this.ready;
+  async getAllStations(): Promise<Station[]> {
+    return this.db.getAll('stations');
+  }
 
+
+  /**
+   * Adds a station if it does not exist yet. Leaves existing
+   * entries alone and will reject
+   *
+   * @return Promise<boolean> true if a new entry was created
+   *    and false if it was either not created or replaced,
+   *    depending on the value of `replace`
+   *
+   */
+  async add(station: Station, replace=false): Promise<boolean> {
+    await this.ready;
+    let result = false;
     const transaction = this.db.transaction('stations', 'readwrite');
     const store = transaction.objectStore('stations');
     const value = await store.get(station.callsign);
-    if ( !value || value.name != station.name ){
+    if ( !value ) {
+      // Value does not exist.
+      await store.put(station);
+      result = true;
+    } else if (value.name !== station.name && replace ) {
+      // Value will be replaced.
       await store.put(station);
     }
     await transaction.done;
-    return !value
+    return result;
   }
 
   /**
@@ -144,7 +162,7 @@ export class StationsService {
     await store.delete(callsign);
     return transaction.done;
   }
-  
+
   /**
    * Update the database using a CSV. Entries will be created or replaced.
    * No entries are deleted.
