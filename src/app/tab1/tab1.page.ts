@@ -162,8 +162,13 @@ export class Tab1Page {
     // some summit fields that are not displayed
     switch (this.logType) {
       case 'Activator':
-        this.form.activatorSummit = this.form.chaserSummit;
-        this.form.chaserSummit = '';
+        // If we switch back from s2s to activator log
+        // the activator summit might already be filled in.
+        // In this case we leave it alone
+        if (!this.form.activatorSummit) {
+          this.form.activatorSummit = this.form.chaserSummit;
+          this.form.chaserSummit = '';
+        }
         break;
       case 'Chaser':
         this.form.chaserSummit = this.form.activatorSummit;
