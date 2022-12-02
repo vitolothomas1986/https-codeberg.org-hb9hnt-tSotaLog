@@ -48,20 +48,21 @@ export class StorageService {
   // required for data migration
   //
   async getStationData(): Promise<{callsign: string, name: string}[]> {
+    await this.ready;
     const data = [];
-    const keys = await this._callsignCache?.keys();
+    const keys = await this._callsignCache.keys();
     for (const key of keys) {
-      const value = await this._callsignCache?.get(key);
+      const value = await this._callsignCache.get(key);
       data.push({
         callsign: key,
         name: value
       });
     }
-    console.log(data)
     return data;
   }
 
   async clearStationData() {
-    await this._callsignCache?.clear()
+    await this.ready;
+    await this._callsignCache.clear()
   }
 }
