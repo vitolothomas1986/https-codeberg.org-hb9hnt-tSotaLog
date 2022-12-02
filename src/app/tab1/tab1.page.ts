@@ -155,9 +155,6 @@ export class Tab1Page {
     this.form.rstRx = '';
     this.form.comment = '';
     this.form.chaserSummit = '';
-
-    // Set back to Activator log
-    this.logType = 'Activator';
   }
 
   changeType() {
