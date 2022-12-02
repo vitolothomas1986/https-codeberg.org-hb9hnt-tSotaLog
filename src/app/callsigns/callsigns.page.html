@@ -10,10 +10,11 @@
       <ion-icon name="search-outline"></ion-icon>
     </ion-label>
     <ion-input 
-      (ionChange)="updateSearch($event)"
+      (ionChange)="refresh()"
       placeholder="callsign"
       clear-input="true"
-      autocapitalize="characters">
+      autocapitalize="characters"
+      [(ngModel)]="search">
     </ion-input>
   </ion-item>
   <cdk-virtual-scroll-viewport itemSize="100" minBufferPx="900" maxBufferPx="1350">
@@ -29,7 +30,7 @@
         </ion-item-option>
       </ion-item-options>
       <ion-item-options side="end">
-        <ion-item-option color="danger" (click)="delete(station)">
+        <ion-item-option color="danger" (click)="delete(station, $event)">
           <ion-icon name="trash"></ion-icon>&nbsp;Delete
         </ion-item-option>
       </ion-item-options>

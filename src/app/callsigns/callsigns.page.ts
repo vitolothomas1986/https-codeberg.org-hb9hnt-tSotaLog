@@ -20,6 +20,7 @@ import * as papa from 'papaparse';
 export class CallsignsPage implements OnInit {
   storage: StorageService;
   stations: Station[];
+  search: string;
 
   constructor(
     public popoverController: PopoverController,
@@ -32,6 +33,7 @@ export class CallsignsPage implements OnInit {
     private file: File
   ) {
     this.storage = storageService;
+    this.search = '';
   }
 
   private async message(msg) {
@@ -53,8 +55,12 @@ export class CallsignsPage implements OnInit {
     this.stations = stations;
   }
 
-  async delete(station: Station): Promise<void> {
+  async delete(station: Station, event?): Promise<void> {
     const index = this.stations.indexOf(station, 0);
+    // Close delete slider just in case it is reused
+    // again later
+    event?.target.parentNode.parentNode.close()
+
     await this.stationsService.delete(station.callsign);
     if (index > -1) {
       this.stations.splice(index, 1);
@@ -64,8 +70,8 @@ export class CallsignsPage implements OnInit {
     }
   }
 
-  async updateSearch(event): Promise<void> {
-    const searchString = event.target.value.toUpperCase();
+  async refresh(): Promise<void> {
+    const searchString = this.search.toUpperCase();
     const stations = await this.stationsService.search(searchString);
 
     this.stations = stations;
@@ -81,11 +87,20 @@ export class CallsignsPage implements OnInit {
 
   async uploadList() {
     const file = await this.chooser.getFile();
+    const loading = await this.loadingController.create({
+      message: `Loading ${file}`,
+    });
+    loading.onDidDismiss().then(() => {
+      this.refresh();
+    });
+    loading.present();
+
     const data = new TextDecoder().decode(file.data);
     if (file) {
       const parsedCsvData = papa.parse(data).data;
-      return this.stationsService.updateWithCSV(parsedCsvData as [string, string][]);
+      await this.stationsService.updateWithCSV(parsedCsvData as [string, string][]);
     }
+    return loading.dismiss();
   }
 
   async downloadList() {
@@ -141,21 +156,21 @@ export class CallsignsPage implements OnInit {
 
     await editDialog.present();
 
-    const data = await editDialog.onDidDismiss()
+    const data = await editDialog.onDidDismiss();
     if (data.data) { // flag is set by save button on popover
-      
+
       // event is undefined if we created a new entry because the
       // function is not called from the edit button where we pass
-      // `$event`. 
+      // `$event`.
       // If it is a new entry we don't replace an existing one.
       const newEntry = !event
-      const created = await this.stationsService.add(station, !newEntry);
-
-      if (!created && newEntry) {
-        this.message(`Error: ${station.callsign} already exists!`);
-        return;
+      try {
+        await this.stationsService.add(station, !newEntry);
+      } catch(e) {
+        this.message(e);
+        return
       }
-      
+
       // Copy data back to the original object
       Object.assign(stationToEdit, station);
 
