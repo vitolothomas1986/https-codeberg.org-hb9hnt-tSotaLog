@@ -5,8 +5,17 @@
 </ion-header>
 
 <ion-content>
-  <ion-label>Search callsign</ion-label>
-  <ion-input (ionChange)="updateSearch($event)"></ion-input>
+  <ion-item>
+    <ion-label>
+      <ion-icon name="search-outline"></ion-icon>
+    </ion-label>
+    <ion-input 
+      (ionChange)="updateSearch($event)"
+      placeholder="callsign"
+      clear-input="true"
+      autocapitalize="characters">
+    </ion-input>
+  </ion-item>
   <cdk-virtual-scroll-viewport itemSize="100" minBufferPx="900" maxBufferPx="1350">
   <ion-list>
     <ion-item-sliding *cdkVirtualFor="let station of stations">

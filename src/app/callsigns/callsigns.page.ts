@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Chooser } from '@awesome-cordova-plugins/chooser/ngx';
 import { PopoverController } from '@ionic/angular';
+import { LoadingController } from '@ionic/angular';
 import { EditCallComponent } from './edit-call/edit-call.component';
+import { AndroidPermissions } from '@awesome-cordova-plugins/android-permissions/ngx';
 import { ToastController } from '@ionic/angular';
 import { StorageService } from '../storage.service';
 import { StationsService, Station } from '../stations.service';
@@ -16,12 +18,13 @@ import * as papa from 'papaparse';
 
 export class CallsignsPage implements OnInit {
   storage: StorageService;
-  //stations: {[key: string]: string}[];
   stations: Station[];
 
   constructor(
     public popoverController: PopoverController,
+    public loadingController: LoadingController,
     public toastController: ToastController,
+    private androidPermissions: AndroidPermissions,
     private storageService: StorageService,
     private stationsService: StationsService,
     private chooser: Chooser,
@@ -61,7 +64,7 @@ export class CallsignsPage implements OnInit {
   }
 
   async updateSearch(event): Promise<void> {
-    const searchString = event.target.value;
+    const searchString = event.target.value.toUpperCase();
     const stations = await this.stationsService.search(searchString);
 
     this.stations = stations;
@@ -85,7 +88,39 @@ export class CallsignsPage implements OnInit {
   }
 
   async downloadList() {
-    return
+    const date = (new Date()).toISOString().split('T')[0];
+    const filename = `${date}_names.csv`;
+    const directory = this.file.dataDirectory;
+    let message = '';
+    let data = '';
+
+    // Start loading data - and informing the user about it
+    const loading = await this.loadingController.create({
+      message: `Saving to ${filename}`,
+    });
+    loading.present();
+    const stations = await this.stationsService.getAllStations();
+
+    for (const station of stations) {
+      data += `${station.callsign},"${station.name}"\n`
+    }
+
+    this.androidPermissions.requestPermissions(
+      [
+        this.androidPermissions.PERMISSION.READ_EXTERNAL_STORAGE,
+        this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE
+      ]
+    );
+
+    try {
+      await this.file.writeFile(directory, filename, data, { replace: true });
+      message = `File saved to\n'${directory.replace(/^file:\/\//, '')}${filename}'`;
+    } catch {
+      message = 'ERROR: Failed to save file!'
+    }
+
+    loading.dismiss();
+    this.message(message);
   }
 
   async editStation(stationToEdit: Station, event?) {
@@ -107,16 +142,27 @@ export class CallsignsPage implements OnInit {
 
     const data = await editDialog.onDidDismiss()
     if (data.data) { // flag is set by save button on popover
-      const createdNew = await this.stationsService.addOrUpdate(station);
+      
+      // event is undefined if we created a new entry because the
+      // function is not called from the edit button where we pass
+      // `$event`. 
+      // If it is a new entry we don't replace an existing one.
+      const newEntry = !event
+      const created = await this.stationsService.add(station, !newEntry);
 
+      if (!created && newEntry) {
+        this.message(`Error: ${station.callsign} already exists!`);
+        return;
+      }
+      
       // Copy data back to the original object
       Object.assign(stationToEdit, station);
 
-      // event is undefined if we created a new entry. We only have to
-      // check whether it already exists if we create a new entry
-      if (!event && this.stations.indexOf(stationToEdit) < 0) {
+      if (newEntry) {
         this.stations = [stationToEdit, ...this.stations];
-        this.message(`${station.callsign} already exists, entry was updated.`);
+        this.message(`Entry for ${station.callsign} created.`);
+      } else {
+        this.message(`Entry for ${station.callsign} updated.`);
       }
     }
   }
