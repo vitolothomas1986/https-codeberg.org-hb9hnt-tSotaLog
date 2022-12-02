@@ -14,6 +14,7 @@ interface StationsDB extends DBSchema {
   }
 }
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -21,6 +22,7 @@ export class StationsService {
 
   ready: Promise<void>;
   db: IDBPDatabase<StationsDB>;
+
 
   constructor(
     private globalSettings: GlobalSettings,
@@ -47,6 +49,27 @@ export class StationsService {
     this.db = db
     this.migrateOldData();
   }
+
+  /**
+   * Checks a callsign whether it's valid and allowed to be used as
+   * a key.
+   *
+   * @return boolean true if callsign is ok
+   */
+  checkCallsign(callsign: string): boolean {
+    const callsignRegexp = new RegExp('^[a-zA-z0-9]+$');
+    return callsignRegexp.test(callsign);
+  }
+
+  /**
+   * Checks whether a station record has a valid callsign
+   *
+   * @return boolean true if callsign of the station is ok
+   */
+  checkStation(station: Station): boolean {
+    return this.checkCallsign(station.callsign);
+  }
+
 
   /**
    * Migrates data from the old storage. Can be removed in a few
@@ -120,11 +143,18 @@ export class StationsService {
    * entries alone and will reject
    *
    * @return Promise<boolean> true if a new entry was created
-   *    and false if it was either not created or replaced,
-   *    depending on the value of `replace`
+   *    and false if it was replaced.
+   *
+   * If replace is false it will throw an error if the station already
+   * exists;
    *
    */
   async add(station: Station, replace=false): Promise<boolean> {
+    if (!this.checkStation(station)) {
+      throw new Error(`'${station.callsign}' does not match allowed callsign pattern!`)
+      return
+    }
+
     await this.ready;
     let result = false;
     const transaction = this.db.transaction('stations', 'readwrite');
@@ -137,6 +167,8 @@ export class StationsService {
     } else if (value.name !== station.name && replace ) {
       // Value will be replaced.
       await store.put(station);
+    } else {
+        throw new Error(`Station '${station.callsign}' already exists!`);
     }
     await transaction.done;
     return result;
@@ -166,8 +198,11 @@ export class StationsService {
     const store = tx.objectStore('stations');
 
     calls.forEach(([callsign, name]) => {
-      const addPromise = store.put({callsign, name});
-      promises.push(addPromise);
+
+      if (this.checkCallsign(callsign)) {
+        const addPromise = store.put({callsign, name});
+        promises.push(addPromise);
+      }
     });
     await Promise.all(promises);
     return tx.done;
