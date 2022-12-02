@@ -4,8 +4,9 @@ import { ModalController} from '@ionic/angular';
 import { QsoEditModalPage } from './../qso-edit-modal/qso-edit-modal.page';
 import { IonRouterOutlet } from '@ionic/angular';
 import { Clipboard } from '@awesome-cordova-plugins/clipboard/ngx';
+import { Chooser } from '@awesome-cordova-plugins/chooser/ngx';
+import { AndroidPermissions } from '@awesome-cordova-plugins/android-permissions/ngx';
 import { ToastController } from '@ionic/angular';
-//import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import { GlobalSettings } from './../globalsettings';
 import { Qso, QsoHistory } from './../../types'
@@ -27,9 +28,11 @@ export class Tab2Page {
     public toastController: ToastController,
     public modalCtrl: ModalController,
     private storage: StorageService,
+    private androidPermissions: AndroidPermissions,
     private alertControl: AlertController,
     private routerOutlet: IonRouterOutlet,
     private clipboard: Clipboard,
+    private chooser: Chooser,
     //private socialSharing: SocialSharing,
     private file: File,
     private globalSettings: GlobalSettings) {
@@ -190,22 +193,8 @@ export class Tab2Page {
             this.copyToClipboard(index);
           }
         },
-        /*
-        {
-          text: 'Share',
-          handler: (alertData) => {
-            this.socialShare(index);
-          }
-        },
-        */
-         {
-          text: 'DL file',
-          handler: () => {
-            this.downloadFile(index);
-          }
-        },
-        {
-          text: 'Save file',
+       {
+          text: 'Save CSV file',
           handler: () => {
             this.saveFile(index);
           }
@@ -288,34 +277,32 @@ export class Tab2Page {
   }
 
 
-  async saveFile(index: number) {
+  async saveFile(index: number, type='csv') {
     const name = this.qsoHistory[index].name;
-    const csv = this.generateSotaCsv(index);
     const date = (new Date()).toISOString().split('T')[0];
-    const filename = `${name}_${date}.csv`
+    const filename = `${name}_${date}.${type}`;
+    const directory = this.file.dataDirectory;
     let message = '';
-    let directory;
-
-    // Try to set up a more user friendly app folder 
-    try {
-      await this.file.checkDir(this.file.externalRootDirectory, 'tSotaLog');
-    } catch {
-      await this.file.createDir(this.file.externalRootDirectory, 'tSotaLog', false);
+    let data;
+    
+    if (type == 'csv') {
+      data = this.generateSotaCsv(index);
+    } else if (type == 'adif') {
+      // TODO...
     }
 
-    // Check again whether the directory exists
-    try {
-      await this.file.checkDir(this.file.externalRootDirectory, 'tSotaLog');
-      directory = `${this.file.externalRootDirectory}/tSotaLog`;
-    } catch {
-      directory = this.file.externalDataDirectory;
-    }
+    this.androidPermissions.requestPermissions(
+      [
+        this.androidPermissions.PERMISSION.READ_EXTERNAL_STORAGE, 
+        this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE
+      ]
+    );
 
     try {
-      await this.file.writeFile(directory, filename, csv, { replace: true });
-      message = `File saved to '${directory.replace(/^file:\/\//, "")}/${filename}'`;
+      await this.file.writeFile(directory, filename, data, { replace: true });
+      message = `File saved to\n'${directory.replace(/^file:\/\//, "")}${filename}'`;
     } catch {
-      message = "ERROR: Failed to save file!"
+      message = 'ERROR: Failed to save file!'
     }
 
     const toast = await this.toastController.create({
@@ -325,25 +312,6 @@ export class Tab2Page {
     toast.present();
   }
   
-  /*
-  We remove this for now
-  async socialShare(index: number) {
-    const name = this.qsoHistory[index].name;
-    const csv = this.generateSotaCsv(index);
-    const date = (new Date()).toISOString().split('T')[0];
-    const filename = `${name}_${date}.csv`
-    const res = await this.file.writeFile(this.file.externalDataDirectory, filename, csv, { replace: true });
-
-    const options = {
-      //message: "csv",
-      //files: res.toURL() 
-      files: [res.toURL]
-    };
-
-    this.socialSharing.shareWithOptions(options);
-  }
-  */
-
   generateSotaCsv(index: number): string {
 
     const qsosToExport = this.qsoHistory[index].qsoList;
@@ -382,7 +350,6 @@ export class Tab2Page {
         newLine += `${qso.call},`;
       }
 
-
       newLine += `${qso.chaserSummit},"${qso.comment}`;
 
       if (includeRst && qso.rstRx) {
@@ -405,7 +372,6 @@ export class Tab2Page {
       sotaCsvString += newLine; 
     }
 
-    console.log(sotaCsvString);
     return sotaCsvString;
   }
 
