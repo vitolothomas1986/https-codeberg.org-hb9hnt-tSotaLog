@@ -10,6 +10,8 @@ hat to write down somewhere that I don't forget them (i.e. here).
 
 # Next release
 
+# Version 0.3.0
+
 * Add a counter to the recent QSO list on the first tab. This helps helps
   with estimating how well the current activation went so far. It also lists
   chaser, activator and s2s counts in case you have some chaser logs left from
