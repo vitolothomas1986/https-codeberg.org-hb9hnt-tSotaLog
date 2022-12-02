@@ -5,6 +5,7 @@ import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@awesome-cordova-plugins/splash-screen/ngx';
 import { StatusBar } from '@awesome-cordova-plugins/status-bar/ngx';
+import { AndroidPermissions } from '@awesome-cordova-plugins/android-permissions/ngx';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { Storage } from '@ionic/storage-angular';
@@ -15,7 +16,7 @@ import { StorageService } from './storage.service';
 import { FormsModule } from '@angular/forms';
 import { Clipboard } from '@awesome-cordova-plugins/clipboard/ngx';
 import { Chooser } from '@awesome-cordova-plugins/chooser/ngx';
-//import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
+// import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 
 
@@ -23,12 +24,13 @@ import { File } from '@awesome-cordova-plugins/file/ngx';
     declarations: [AppComponent, EditPopoverComponent, EditCallComponent],
     imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, QsoEditModalPageModule, FormsModule],
     providers: [
+        AndroidPermissions,
         StatusBar,
         SplashScreen,
         GlobalSettings,
         Clipboard,
         Chooser,
-        //SocialSharing,
+        // SocialSharing,
         File,
         Storage,
         StorageService,
