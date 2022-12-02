@@ -138,7 +138,11 @@
 <ion-content>
   <ion-list>
     <ion-list-header>
-      Recent QSOs
+      Recent QSOs 
+        (ACT: {{settings.recentQsoStats.act}}
+        CHA: {{settings.recentQsoStats.cha}}
+        S2S: {{settings.recentQsoStats.s2s}}
+        TOT: {{settings.recentQsoStats.total}})
     </ion-list-header>
 
     <ion-item *ngFor="let qso of settings.recentQsos; let i = index">

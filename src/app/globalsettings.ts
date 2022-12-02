@@ -82,6 +82,29 @@ export class GlobalSettings {
     }
   }
 
+  /**
+   * Gives some stats about how many QSOs there are
+   * in the recent QSOs, separated by Chaser, Activator and
+   * s2s logs
+   */
+  get recentQsoStats() {
+    let total, act, cha, s2s;
+    total = act = cha = s2s = 0;
+    for (const qso of this.recentQsos) {
+      if (qso.activatorSummit !== '') {
+        act++;
+      }
+      if (qso.chaserSummit !== '') {
+        cha++;
+      }
+      if (qso.chaserSummit !== '' && qso.activatorSummit !== '') {
+        s2s++;
+      }
+      total++;
+    }
+
+    return {total, act, cha, s2s}
+  }
   // This function predates the storage service and should
   // eventually be integrated in the storage service....
   async saveToStorage(key: string, value: any) {

@@ -10,6 +10,11 @@ hat to write down somewhere that I don't forget them (i.e. here).
 
 # Next release
 
+* Add a counter to the recent QSO list on the first tab. This helps helps
+  with estimating how well the current activation went so far. It also lists
+  chaser, activator and s2s counts in case you have some chaser logs left from
+  way to the summit (every s2s also counts as chaser and activator log)
+
 * Add new tab to show stored names for callsigns. This change involves
   * Allowing to import a names.csv file consisting of a column of callsigns 
     and a column of names. (no header row required or supported)
