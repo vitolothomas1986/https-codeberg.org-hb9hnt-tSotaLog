@@ -5,7 +5,7 @@ export type Qso = {
     chaserSummit: string,
     time: string,
     date: string,
-    call: string,
+    callsign: string,
     rstTx: string,
     rstRx: string,
     comment: string

@@ -58,7 +58,7 @@
         <ion-col>
           <div>
             <ion-input 
-              [(ngModel)]="form.call" 
+              [(ngModel)]="form.callsign" 
               (ionChange)="this.callCheck()"
               class="call-input"
               autocapitalize="characters"
@@ -148,7 +148,7 @@
 
     <ion-item *ngFor="let qso of settings.recentQsos; let i = index">
       <ion-label>
-        <h2>{{qso.time}} &nbsp; <strong>{{qso.call}}</strong> </h2>
+        <h2>{{qso.time}} &nbsp; <strong>{{qso.callsign}}</strong> </h2>
       </ion-label>
       <ion-button (click)="showEditDialog(i)" color="tertiary" shape="round">edit</ion-button>
       <ion-button (click)="deleteQso(i)" color="danger" shape="round">delete</ion-button>

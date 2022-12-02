@@ -22,19 +22,7 @@ export class Tab1Page {
   settings: GlobalSettings;
   ready: Promise<void>;
   storage: StorageService;
-
-  form = {
-    band: '',
-    mode: '',
-    activatorSummit: '',
-    chaserSummit: '',
-    time: undefined,
-    date: undefined,
-    call: '',
-    rstTx: '',
-    rstRx: '',
-    comment: '',
-  };
+  form: Qso;
 
   constructor(
     private globalSettings: GlobalSettings,
@@ -51,6 +39,18 @@ export class Tab1Page {
     // TODO: Don't hardcode the log types
     this.logType = 'Activator';
     this.settings = globalSettings;
+    this.form = {
+      band: '',
+      mode: '',
+      activatorSummit: '',
+      chaserSummit: '',
+      time: undefined,
+      date: undefined,
+      callsign: '',
+      rstTx: '',
+      rstRx: '',
+      comment: '',
+    }
 
     this.ready = this.init();
   }
@@ -98,9 +98,9 @@ export class Tab1Page {
   async callCheck() {
     // Get cache if there is any. Otherwise this will return
     // an empty string
-    const station = await this.stationsService.getStation(this.form.call);
+    const station = await this.stationsService.getStation(this.form.callsign?.toUpperCase());
     const name = station?.name;
-    if (name && this.form.comment === '') {
+    if (name) {
       this.form.comment = name;
     }
   }
@@ -112,7 +112,7 @@ export class Tab1Page {
 
     // Capitalize because up to here it's only displayed in
     // upper case using css
-    newQso.call = newQso.call.toUpperCase();
+    newQso.callsign = newQso.callsign.toUpperCase();
 
     const now = new Date();
     if (newQso.time === undefined) {
@@ -138,7 +138,7 @@ export class Tab1Page {
     // name to the stations service
     if (newQso.comment.length > 0) {
       this.stationsService.add({
-        callsign: newQso.call,
+        callsign: newQso.callsign,
         name: newQso.comment
       }, true);
     }
@@ -150,7 +150,7 @@ export class Tab1Page {
     // clear inputs
     this.form.time = undefined;
     this.form.date = undefined;
-    this.form.call = '';
+    this.form.callsign = '';
     this.form.rstTx = '';
     this.form.rstRx = '';
     this.form.comment = '';

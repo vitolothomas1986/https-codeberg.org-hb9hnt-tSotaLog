@@ -345,9 +345,9 @@ export class Tab2Page {
 
       // Add a /P in case of a chaser log.
       if (this.settings.exportSettings.addPortable && qso.chaserSummit != '') {
-        newLine += `${qso.call}/P,`;
+        newLine += `${qso.callsign}/P,`;
       } else {
-        newLine += `${qso.call},`;
+        newLine += `${qso.callsign},`;
       }
 
       newLine += `${qso.chaserSummit},"${qso.comment}`;
