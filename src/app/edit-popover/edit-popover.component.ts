@@ -1,5 +1,5 @@
 import { GlobalSettings } from './../globalsettings';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavParams, PopoverController } from '@ionic/angular';
 
 @Component({
@@ -7,7 +7,7 @@ import { NavParams, PopoverController } from '@ionic/angular';
   templateUrl: './edit-popover.component.html',
   styleUrls: ['./edit-popover.component.scss'],
 })
-export class EditPopoverComponent implements OnInit {
+export class EditPopoverComponent {
 
   qsoParams: any;
   settings: GlobalSettings;
