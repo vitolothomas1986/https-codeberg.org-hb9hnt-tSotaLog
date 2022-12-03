@@ -31,7 +31,7 @@ export class EditPopoverComponent implements OnInit {
   }
 
   callCheck(event) {
-    this.qsoParams.call = event.target.value.toUpperCase();
+    this.qsoParams.callsign = event.target.value.toUpperCase();
   }
 
 
