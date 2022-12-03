@@ -30,7 +30,6 @@ export class StorageService {
     });
 
     await this._callsignCache.create();
-
   }
 
   public set(key: string, value: any) {

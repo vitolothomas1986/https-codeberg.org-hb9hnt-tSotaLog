@@ -21,8 +21,6 @@ export class EditPopoverComponent implements OnInit {
     this.settings = globalSettings;
   }
 
-  ngOnInit() {}
-
   // TODO: Don't duplicate those two functions.
   // Hint: Yes, you should really fix this. You already forgot
   // to fix this regex along with the other one once before.
