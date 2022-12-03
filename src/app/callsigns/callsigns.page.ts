@@ -86,14 +86,27 @@ export class CallsignsPage implements OnInit {
   }
 
   async uploadList() {
-    const file = await this.chooser.getFile();
+    const opening = await this.loadingController.create({
+      message: `Opening file...`,
+      //message: `Loading ${file.name}`,
+    });
+    opening.present();
+    // This takes waay to long. That's why we already show a loading 
+    // controller above
+    const file = await this.chooser.getFile('text/csv');
+    
     const loading = await this.loadingController.create({
-      message: `Loading ${file}`,
+      message: `Loading ${file.name}`,
     });
     loading.onDidDismiss().then(() => {
       this.refresh();
     });
+
+    // Switch out the loading notification with a more 
+    // informative one.
+    opening.dismiss();
     loading.present();
+
 
     const data = new TextDecoder().decode(file.data);
     if (file) {
