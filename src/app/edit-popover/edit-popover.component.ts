@@ -24,8 +24,10 @@ export class EditPopoverComponent implements OnInit {
   ngOnInit() {}
 
   // TODO: Don't duplicate those two functions.
+  // Hint: Yes, you should really fix this. You already forgot
+  // to fix this regex along with the other one once before.
   summitCheck(event) {
-    const regex = /([A-Za-z]{2})\/?([A-Za-z]{2})-?([0-9]{3})/;
+    const regex = /([A-Za-z0-9]{1,3})\/?([A-Za-z]{2})-?([0-9]{3})/;
     const newString = event.target.value.replace(regex, '$1/$2-$3').toUpperCase();
     event.target.value = newString;
   }
