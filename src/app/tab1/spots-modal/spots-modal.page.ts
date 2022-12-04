@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 import { SpotsService, Spot } from '../../spots.service';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-spots-modal',
@@ -14,12 +16,36 @@ export class SpotsModalPage implements OnInit {
 
   constructor(
     public modalController: ModalController,
+    public alertController: AlertController,
     private spotsService: SpotsService,
-  ) { }
+  ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.spotsService
       .fetchSpots(this.fetchLimit)
+      .pipe(
+        catchError(async(error) => {
+          let errorMsg;
+          if (error.error instanceof ErrorEvent) {
+            errorMsg = `${error.error.message}`;
+          } else {
+            errorMsg = `${error.message}`;
+          }
+          const alert = await this.alertController.create({
+            header: 'Failed to get spots',
+            subHeader: 'Check your internet connection!',
+            message: errorMsg,
+            buttons: ['OK'],
+          });
+
+          alert.onWillDismiss().then(() => {
+            this.dismiss();
+          });
+          await alert.present();
+
+          return [] as Spot[];
+        })
+      )
       .subscribe((data) => {
         this.spots = data;
       });
