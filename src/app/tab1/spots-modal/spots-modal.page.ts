@@ -10,6 +10,7 @@ import { SpotsService, Spot } from '../../spots.service';
 export class SpotsModalPage implements OnInit {
 
   spots: Spot[];
+  fetchLimit: -0.5;
 
   constructor(
     public modalController: ModalController,
@@ -18,7 +19,7 @@ export class SpotsModalPage implements OnInit {
 
   ngOnInit() {
     this.spotsService
-      .fetchSpots(50)
+      .fetchSpots(this.fetchLimit)
       .subscribe((data) => {
         this.spots = data;
       });
