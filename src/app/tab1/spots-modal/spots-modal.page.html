@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Latest Spots</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item button (click)="pickSpot(spot)" *ngFor="let spot of spots">
+      <ion-label>
+        <h2>
+          <strong>{{spot.frequency}}&nbsp;{{spot.mode | uppercase}}</strong>
+          on {{spot.associationCode}}/{{spot.summitCode}}
+          by {{spot.activatorCallsign | uppercase}} 
+          <small>({{spot.timeStamp | date: "H:mm:ss"}})</small>
+        </h2>
+        <p>{{spot.summitDetails}} <span *ngIf="spot.comments">({{spot.comments}})</span></p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

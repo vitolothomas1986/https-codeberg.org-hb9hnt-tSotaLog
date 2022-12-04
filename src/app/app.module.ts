@@ -16,13 +16,21 @@ import { StorageService } from './storage.service';
 import { FormsModule } from '@angular/forms';
 import { Clipboard } from '@awesome-cordova-plugins/clipboard/ngx';
 import { Chooser } from '@awesome-cordova-plugins/chooser/ngx';
-// import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
 import { File } from '@awesome-cordova-plugins/file/ngx';
+import { HttpClientModule } from '@angular/common/http';                                                                                                                                     
+
 
 
 @NgModule({
     declarations: [AppComponent, EditPopoverComponent, EditCallComponent],
-    imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, QsoEditModalPageModule, FormsModule],
+    imports: [
+      BrowserModule,
+      IonicModule.forRoot(),
+      AppRoutingModule,
+      QsoEditModalPageModule,
+      FormsModule,
+      HttpClientModule,
+    ],
     providers: [
         AndroidPermissions,
         StatusBar,
@@ -30,7 +38,6 @@ import { File } from '@awesome-cordova-plugins/file/ngx';
         GlobalSettings,
         Clipboard,
         Chooser,
-        // SocialSharing,
         File,
         Storage,
         StorageService,

@@ -13,6 +13,10 @@ const routes: Routes = [
   {
     path: 'callsigns',
     loadChildren: () => import('./callsigns/callsigns.module').then( m => m.CallsignsPageModule)
+  },
+  {
+    path: 'spots-modal',
+    loadChildren: () => import('./tab1/spots-modal/spots-modal.module').then( m => m.SpotsModalPageModule)
   }
 ];
 @NgModule({

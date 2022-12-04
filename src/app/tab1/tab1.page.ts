@@ -1,5 +1,8 @@
 import { GlobalSettings } from './../globalsettings';
 import { Component } from '@angular/core';
+import { ModalController} from '@ionic/angular';
+import { SpotsModalPage } from './spots-modal/spots-modal.page';
+import { IonRouterOutlet } from '@ionic/angular';
 import { StatusBar } from '@awesome-cordova-plugins/status-bar/ngx';
 import { PopoverController } from '@ionic/angular';
 import { EditPopoverComponent } from '../edit-popover/edit-popover.component';
@@ -25,10 +28,12 @@ export class Tab1Page {
   form: Qso;
 
   constructor(
-    private globalSettings: GlobalSettings,
-    private statusBar: StatusBar,
     public popoverController: PopoverController,
     public toastController: ToastController,
+    public modalController: ModalController,
+    private globalSettings: GlobalSettings,
+    private statusBar: StatusBar,
+    private routerOutlet: IonRouterOutlet,
     private stationsService: StationsService,
     private storageService: StorageService) {
 
@@ -93,6 +98,30 @@ export class Tab1Page {
     const newString = event.target.value.replace(regex, '$1/$2-$3').toUpperCase();
     event.target.value = newString;
 
+  }
+
+  async showSpotsModal() {
+    const modal = await this.modalController.create({
+      component: SpotsModalPage,
+      canDismiss: true,
+      presentingElement: this.routerOutlet.nativeEl
+    });
+
+    await modal.present();
+
+    const result = await modal.onWillDismiss()
+    const spot = result?.data
+    if (spot) {
+      // Set mode to s2s as we're s2s hunting
+      this.logType = 'Summit2Summit';
+      // Copy spot into the fields
+      Object.assign(this.form, {
+        band: spot.frequency,
+        mode: spot.mode,
+        chaserSummit: `${spot.associationCode}/${spot.summitCode}`,
+        callsign: spot.activatorCallsign,
+      });
+    }
   }
 
   async callCheck() {
