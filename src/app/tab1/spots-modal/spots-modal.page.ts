@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, NavParams, Platform } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { SpotsService, Spot } from '../../spots.service';
 
 @Component({
