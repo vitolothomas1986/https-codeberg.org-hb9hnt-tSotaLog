@@ -10,7 +10,7 @@
 <ion-content>
   <ion-list>
     <ion-item button (click)="pickSpot(spot)" *ngFor="let spot of spots">
-      <ion-label>
+      <ion-label class="{{spot.highlightColor}}">
         <h2>
           <strong>{{spot.frequency}}&nbsp;{{spot.mode | uppercase}}</strong>
           on {{spot.associationCode}}/{{spot.summitCode}}
