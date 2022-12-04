@@ -10,6 +10,11 @@ hat to write down somewhere that I don't forget them (i.e. here).
 
 # Next release
 
+* Access the latest SOTA spots from the log entry form to copy the data from 
+  the spot to the entry form. This makes logging s2s QSOs easier when s2s chasing.
+  (Please note, this doesn't mean the app supports sending spots. Receiving them 
+  is easier because we don't have to deal with authentication on the API.)
+
 # Version 0.3.0
 
 * BUGFIX Do not clear summit field when switching from activator to chaser log
