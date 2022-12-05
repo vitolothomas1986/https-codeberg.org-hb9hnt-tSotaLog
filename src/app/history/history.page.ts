@@ -13,11 +13,11 @@ import { Qso, QsoHistory } from './../../types'
 import { StorageService } from '../storage.service';
 
 @Component({
-  selector: 'app-tab2',
-  templateUrl: 'tab2.page.html',
-  styleUrls: ['tab2.page.scss']
+  selector: 'app-history',
+  templateUrl: 'history.page.html',
+  styleUrls: ['history.page.scss']
 })
-export class Tab2Page {
+export class HistoryPage {
 
   qsoStorage: StorageService;
   qsoHistory: Array<QsoHistory>;
