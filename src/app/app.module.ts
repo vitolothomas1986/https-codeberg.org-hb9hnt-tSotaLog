@@ -17,9 +17,8 @@ import { FormsModule } from '@angular/forms';
 import { Clipboard } from '@awesome-cordova-plugins/clipboard/ngx';
 import { Chooser } from '@awesome-cordova-plugins/chooser/ngx';
 import { File } from '@awesome-cordova-plugins/file/ngx';
-import { HttpClientModule } from '@angular/common/http';                                                                                                                                     
-
-
+import { HttpClientModule } from '@angular/common/http';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
     declarations: [AppComponent, EditPopoverComponent, EditCallComponent],
@@ -39,6 +38,7 @@ import { HttpClientModule } from '@angular/common/http';
         Clipboard,
         Chooser,
         File,
+        DatePipe,
         Storage,
         StorageService,
         { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }

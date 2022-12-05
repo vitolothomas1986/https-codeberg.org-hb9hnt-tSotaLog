@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { ModalController} from '@ionic/angular';
+import { DatePipe } from '@angular/common';
 import { QsoEditModalPage } from './../qso-edit-modal/qso-edit-modal.page';
 import { IonRouterOutlet } from '@ionic/angular';
 import { Clipboard } from '@awesome-cordova-plugins/clipboard/ngx';
@@ -33,7 +34,6 @@ export class HistoryPage {
     private routerOutlet: IonRouterOutlet,
     private clipboard: Clipboard,
     private chooser: Chooser,
-    //private socialSharing: SocialSharing,
     private file: File,
     private globalSettings: GlobalSettings) {
 
@@ -182,22 +182,35 @@ export class HistoryPage {
     const alert = await this.alertControl.create({
       header: 'Export QSOs',
       message: 'make sure you got the OP settings right',
-      buttons: [
+      inputs: [
         {
-          text: 'Cancel',
-          role: 'cancel',
+          label: 'SOTA CSV',
+          type: 'radio',
+          checked: true,
+          value: 'csv',
         },
         {
+          label: 'ADIF',
+          type: 'radio',
+          value: 'adif',
+        },
+      ],
+      buttons: [
+       {
           text: 'Copy to clipboard',
-          handler: () => {
-            this.copyToClipboard(index);
+          handler: (type) => {
+            this.copyToClipboard(index, type);
           }
         },
        {
-          text: 'Save CSV file',
-          handler: () => {
-            this.saveFile(index);
+          text: 'Save to file',
+          handler: (type) => {
+            this.saveFile(index, type);
           }
+        },
+        {
+          text: 'Cancel',
+          role: 'cancel',
         }
       ]
       });
@@ -249,8 +262,8 @@ export class HistoryPage {
 
   }
 
-  async copyToClipboard(index: number) {
-    this.clipboard.copy(this.generateSotaCsv(index));
+  async copyToClipboard(index: number, type='csv') {
+    this.clipboard.copy(this.generateExport(index, type));
     const toast = await this.toastController.create({
       message: 'Your log has been copied!',
       duration: 2000
@@ -263,14 +276,8 @@ export class HistoryPage {
     const date = (new Date()).toISOString().split('T')[0];
     const filename = `${name}_${date}.${type}`;
     const directory = this.file.externalDataDirectory;
+    const data = this.generateExport(index, type);
     let message = '';
-    let data;
-    
-    if (type == 'csv') {
-      data = this.generateSotaCsv(index);
-    } else if (type == 'adif') {
-      // TODO...
-    }
 
     this.androidPermissions.requestPermissions(
       [
@@ -293,15 +300,31 @@ export class HistoryPage {
     toast.present();
   }
   
-  generateSotaCsv(index: number): string {
+  generateExport(index: number, format='csv'): string {
 
     const qsosToExport = this.qsoHistory[index].qsoList;
     const includeRst = this.settings.exportSettings.rstComment;
     const includeS2s = this.settings.exportSettings.s2sComment;
-    const ownCall = this.settings.opData.callsign;
-    let sotaCsvString = '';
+    const ownCallsign = this.settings.opData.callsign;
+    let lineGenerator;
+    let exportData = '';
+
+    // Choose a line generator function. 
+    if (format === 'csv') {
+      lineGenerator = generateCsvLine;
+    } else if (format === 'adif') {
+      lineGenerator = generateAdifLine;
+      const [genDate, genTime] = new Date().toISOString().split('T');
+      // Add adif header
+      exportData = `Generated on ${genDate} at ${genTime} for ${ownCallsign}\r\n\r\n` +
+        '<ADIF_VER:5>3.1.3\r\n' +
+        '<PROGRAMMID:7>tSotaLog\r\n\r\n' +
+        '<EOH>\r\n\r\n'
+    }
 
     // SotaData expects the CSV to be in chronological order
+    // but the QSOs might not be if they were edited later,
+    // not entered one after another.
     qsosToExport.sort((qsoA, qsoB) => {
       const timeA = new Date(`${qsoA.date}T${qsoA.time}Z`);
       const timeB = new Date(`${qsoB.date}T${qsoB.time}Z`);
@@ -311,49 +334,170 @@ export class HistoryPage {
     });
     
     for (const qso of qsosToExport) {
-      let callUsed = ownCall;
+      let callsignUsed = ownCallsign;
+      let otherCallsign = qso.callsign;
+      let comment = qso.comment;
       
-      // Add a /P in case of a activator log.
-      if (this.settings.exportSettings.addPortable && qso.activatorSummit != '') {
-        callUsed += "/P";
+      // Add a /P to stations on a summit if the
+      // settings say to do so.
+      if (this.settings.exportSettings.addPortable) {
+        if (qso.activatorSummit != '') {
+          callsignUsed += '/P';
+        }
+        if (qso.chaserSummit != '') {
+          otherCallsign += '/P';
+        }
       }
-
-      let newLine = 'V2,';
-      
-      newLine += `${callUsed},${qso.activatorSummit},`;
-      newLine += `${qso.date},${qso.time},`;
-      newLine += `${qso.band}Mhz,${qso.mode},`;
-
-      // Add a /P in case of a chaser log.
-      if (this.settings.exportSettings.addPortable && qso.chaserSummit != '') {
-        newLine += `${qso.callsign}/P,`;
-      } else {
-        newLine += `${qso.callsign},`;
-      }
-
-      newLine += `${qso.chaserSummit},"${qso.comment}`;
 
       if (includeRst && qso.rstRx) {
-        newLine += `${newLine.slice(-1) != '"' && newLine.slice(-1) != ' ' ? " " : ""}`
-        newLine += `r${qso.rstRx}`;
+        if (comment != '') {
+          comment += " ";
+        }
+        comment += `r${qso.rstRx}`;
       }
 
       if (includeRst && qso.rstTx) {
-        newLine += `${newLine.slice(-1) != '"' && newLine.slice(-1) != ' ' ? " " : ""}`
-        newLine += `s${qso.rstTx}`;
+        if (comment != '') {
+          comment += " ";
+        }
+        comment += `s${qso.rstTx}`;
       }
 
       if (includeS2s && qso.chaserSummit != '' && qso.activatorSummit != '') {
-        newLine += `${newLine.slice(-1) != '"' && newLine.slice(-1) != ' ' ? " " : ""}`
-        newLine += `S2S ${qso.chaserSummit}`;
+        if (comment != '') {
+          comment += " ";
+        }
+        comment += `S2S ${qso.chaserSummit}`;
       }
-
-      newLine += '"\r\n';
-
-      sotaCsvString += newLine; 
+      
+      // Add actual line to export data using the selected
+      // line generator.
+      exportData += lineGenerator(
+        callsignUsed,
+        qso.activatorSummit,
+        otherCallsign,
+        qso.chaserSummit,
+        qso.date,
+        qso.time,
+        qso.band,
+        qso.mode,
+        comment,
+        qso.rstTx,
+        qso.rstRx
+      )
     }
+    return exportData;
+  }
+}
 
-    return sotaCsvString;
+function generateCsvLine(
+  ownCallsign,
+  ownSummit,
+  otherCallsign,
+  chasedSummit,
+  date,
+  time,
+  freq,
+  mode,
+  comment,
+) {
+  return 'V2,'.concat(
+    `${ownCallsign},${ownSummit},`,
+    `${date},${time},`,
+    `${freq}Mhz,${mode},`,
+    `${otherCallsign},`,
+    `${chasedSummit},"${comment}"`,
+    '\r\n'
+  )
+}
+
+function generateAdifLine(
+  ownCallsign,
+  ownSummit,
+  otherCallsign,
+  chasedSummit,
+  date,
+  time,
+  freq,
+  mode,
+  comment,
+  rstTx,
+  rstRx,
+) {
+  const datePipe = new DatePipe('en-US');
+  const dateString = datePipe.transform(new Date(date), 'yyyyMMdd');
+  const operator = ownCallsign.replace('/P', '');
+  let band = ''
+  time = time.replace(':', '');
+
+  // Determine band according to ADIF specs
+  // http://adif.org.uk/313/ADIF_313.htm#Band_Enumeration
+  // This looks terrible but I couldn't find a better way
+  const freqNumber = parseFloat(freq);
+  if (freqNumber >= .1357 && freqNumber <= .1378) {band = '2190m'}
+  else if (freqNumber >= .472 && freqNumber <= .479) {band = '630m'}
+  else if (freqNumber >= .501 && freqNumber <= .504) {band = '560m'}
+  else if (freqNumber >= 1.8 && freqNumber <= 2.0) {band = '160m'}
+  else if (freqNumber >= 3.5 && freqNumber <= 4.0) {band = '80m'}
+  else if (freqNumber >= 5.06 && freqNumber <= 5.45) {band = '60m'}
+  else if (freqNumber >= 7.0 && freqNumber <= 7.3) {band = '40m'}
+  else if (freqNumber >= 10.1 && freqNumber <= 10.15) {band = '30m'}
+  else if (freqNumber >= 14.0 && freqNumber <= 14.35) {band = '20m'}
+  else if (freqNumber >= 18.068 && freqNumber <= 18.168) {band = '17m'}
+  else if (freqNumber >= 21.0 && freqNumber <= 21.45) {band = '15m'}
+  else if (freqNumber >= 24.890 && freqNumber <= 24.99) {band = '12m'}
+  else if (freqNumber >= 28.0 && freqNumber <= 29.7) {band = '10m'}
+  else if (freqNumber >= 40 && freqNumber <= 45) {band = '8m'}
+  else if (freqNumber >= 50 && freqNumber <= 54) {band = '6m'}
+  else if (freqNumber >= 54.000001 && freqNumber <= 69.9) {band = '5m'}
+  else if (freqNumber >= 70 && freqNumber <= 71) {band = '4m'}
+  else if (freqNumber >= 144 && freqNumber <= 148) {band = '2m'}
+  else if (freqNumber >= 222 && freqNumber <= 225) {band = '1.25m'}
+  else if (freqNumber >= 420 && freqNumber <= 450) {band = '70cm'}
+  else if (freqNumber >= 902 && freqNumber <= 928) {band = '33cm'}
+  else if (freqNumber >= 1240 && freqNumber <= 1300) {band = '23cm'}
+  else if (freqNumber >= 2300 && freqNumber <= 2450) {band = '13cm'}
+  else if (freqNumber >= 3300 && freqNumber <= 3500) {band = '9cm'}
+  else if (freqNumber >= 5650 && freqNumber <= 5925) {band = '6cm'}
+  else if (freqNumber >= 10000 && freqNumber <= 10500) {band = '3cm'}
+  else if (freqNumber >= 24000 && freqNumber <= 24250) {band = '1.25cm'}
+  else if (freqNumber >= 47000 && freqNumber <= 47200) {band = '6mm'}
+  else if (freqNumber >= 75500 && freqNumber <= 81000) {band = '4mm'}
+  else if (freqNumber >= 119980 && freqNumber <= 123000) {band = '2.5mm'}
+  else if (freqNumber >= 134000 && freqNumber <= 149000) {band = '2mm'}
+  else if (freqNumber >= 241000 && freqNumber <= 250000) {band = '1mm'}
+
+  let line = ''.concat(
+    `<QSO_DATE:${dateString.length}>${dateString} `,
+    `<TIME_ON:${time.length}>${time} `,
+    `<TIME_OFF:${time.length}>${time} `,
+    `<CALL:${otherCallsign.length}>${otherCallsign} `,
+    `<FREQ:${freq.length}>${freq} `,
+    `<BAND:${band.length}>${band} `,
+    `<MODE:${mode.length}>${mode} `,
+    `<OPERATOR:${operator.length}>${operator} `,
+    `<STATION_CALLSIGN:${ownCallsign.length}>${ownCallsign} `
+  )
+  if (comment && comment !== '') {
+    line += `<COMMENT:${comment.length}>${comment} `; 
   }
 
+  if (ownSummit && ownSummit !== '') {
+    line += `<MY_SOTA_REF:${ownSummit.length}>${ownSummit} `;
+  }
+
+  if (chasedSummit && chasedSummit !== '') {
+    line += `<QTH:${chasedSummit.length}>${chasedSummit} `;
+    line += `<SOTA_REF:${chasedSummit.length}>${chasedSummit} `;
+  }
+ 
+  if (rstTx && rstTx !== '') {
+    line += `<RST_SENT:${rstTx.length}>${rstTx} `;
+  }
+  
+  if (rstRx && rstRx !== '') {
+    line += `<RST_RCVD:${rstRx.length}>${rstRx} `
+  }
+
+  return `${line}<EOR>\r\n`;
 }
