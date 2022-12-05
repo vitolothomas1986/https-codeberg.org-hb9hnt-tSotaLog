@@ -16,7 +16,7 @@ const routes: Routes = [
   },
   {
     path: 'spots-modal',
-    loadChildren: () => import('./tab1/spots-modal/spots-modal.module').then( m => m.SpotsModalPageModule)
+    loadChildren: () => import('./logbook/spots-modal/spots-modal.module').then( m => m.SpotsModalPageModule)
   }
 ];
 @NgModule({
