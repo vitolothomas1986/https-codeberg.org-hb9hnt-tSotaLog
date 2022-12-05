@@ -258,25 +258,6 @@ export class HistoryPage {
     toast.present();
   }
 
-  async downloadFile(index: number) {
-    const name = this.qsoHistory[index].name;
-    const csv = this.generateSotaCsv(index);
-    const date = (new Date()).toISOString().split('T')[0];
-    const filename = `${date}_${name}.csv`;
-    const dataBlob = new Blob([csv], {type: 'text/csv'});
-    const pom = document.createElement('a');
-
-    pom.setAttribute('href', window.URL.createObjectURL(dataBlob));
-    pom.setAttribute('download', filename);
-
-    pom.dataset.downloadurl = ['text/csv', pom.download, pom.href].join(':');
-    pom.draggable = true;
-    pom.classList.add('dragout');
-    pom.click();
-
-  }
-
-
   async saveFile(index: number, type='csv') {
     const name = this.qsoHistory[index].name;
     const date = (new Date()).toISOString().split('T')[0];
