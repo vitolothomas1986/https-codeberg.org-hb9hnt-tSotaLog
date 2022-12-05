@@ -8,9 +8,15 @@ hat to write down somewhere that I don't forget them (i.e. here).
 
 * Add a summit database to display summit names
 
-# Next release
+# Version 0.4.0
 
-* Access the latest SOTA spots from the log entry form to copy the data from 
+* Issue #3: Added ADIF export support. The export dialog now asks for the format to export
+  and either writes a `.adif` or a `.csv` file. Both formats can also be exported
+  to the clipboard in case saving to files directly does not work. (Thanks to
+  Joe OE5JFE for providing 
+  [an ADIF example on the Sota reflector.](https://reflector.sota.org.uk/t/tsotalog-fork-of-general-purpose-foss-logging-app-totalog/28500/10)
+
+* Issue #10: Access the latest SOTA spots from the log entry form to copy the data from 
   the spot to the entry form. This makes logging s2s QSOs easier when s2s chasing.
   (Please note, this doesn't mean the app supports sending spots. Receiving them 
   is easier because we don't have to deal with authentication on the API.)
