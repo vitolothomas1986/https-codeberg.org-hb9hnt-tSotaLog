@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="2" id="ch.hb9hnt.tsotalog" version="0.3.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget android-versionCode="4" id="ch.hb9hnt.tsotalog" version="0.4.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>tSotaLog</name>
     <description>Log SOTA activations on your phone or tablet</description>
     <author email="nomail@hb9hnt.ch" href="https://codeberg.org/hb9hnt/tSotaLog">tSotaLog Contributors</author>
