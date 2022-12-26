@@ -281,25 +281,25 @@ export class HistoryPage {
 
     this.androidPermissions.requestPermissions(
       [
-        this.androidPermissions.PERMISSION.READ_EXTERNAL_STORAGE, 
+        this.androidPermissions.PERMISSION.READ_EXTERNAL_STORAGE,
         this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE
       ]
     );
 
     try {
       await this.file.writeFile(directory, filename, data, { replace: true });
-      message = `File saved to\n'${directory.replace(/^file:\/\//, "")}${filename}'`;
+      message = `File saved to\n'${directory.replace(/^file:\/\//, '')}${filename}'`;
     } catch {
       message = 'ERROR: Failed to save file!'
     }
 
     const toast = await this.toastController.create({
-      message: message,
+      message,
       duration: 5000
     });
     toast.present();
   }
-  
+
   generateExport(index: number, format='csv'): string {
 
     const qsosToExport = this.qsoHistory[index].qsoList;
@@ -309,7 +309,7 @@ export class HistoryPage {
     let lineGenerator;
     let exportData = '';
 
-    // Choose a line generator function. 
+    // Choose a line generator function.
     if (format === 'csv') {
       lineGenerator = generateCsvLine;
     } else if (format === 'adif') {
@@ -332,46 +332,46 @@ export class HistoryPage {
       if (timeA < timeB) { return -1 }
       return 0;
     });
-    
+
     for (const qso of qsosToExport) {
       let callsignUsed = ownCallsign;
       let otherCallsign = qso.callsign;
       let comment = qso.comment;
-      
+
       // Add a /P to stations on a summit if the
       // settings say to do so.
       if (this.settings.exportSettings.addPortable) {
-        if (qso.activatorSummit != '') {
+        if (qso.activatorSummit !== '') {
           callsignUsed += '/P';
         }
-        if (qso.chaserSummit != '') {
+        if (qso.chaserSummit !== '') {
           otherCallsign += '/P';
         }
       }
 
       if (includeRst && qso.rstRx) {
-        if (comment != '') {
-          comment += " ";
+        if (comment !== '') {
+          comment += ' ';
         }
         comment += `r${qso.rstRx}`;
       }
 
       if (includeRst && qso.rstTx) {
-        if (comment != '') {
-          comment += " ";
+        if (comment !== '') {
+          comment += ' ';
         }
         comment += `s${qso.rstTx}`;
       }
 
-      if (includeS2s && qso.chaserSummit != '' && qso.activatorSummit != '') {
-        if (comment != '') {
-          comment += " ";
+      if (includeS2s && qso.chaserSummit !== '' && qso.activatorSummit !== '') {
+        if (comment !== '') {
+          comment += ' ';
         }
         comment += `S2S ${qso.chaserSummit}`;
       }
-      
+
       // Add actual line to export data using the selected
-      // line generator.
+      // line generator. S
       exportData += lineGenerator(
         callsignUsed,
         qso.activatorSummit,
@@ -479,7 +479,7 @@ function generateAdifLine(
     `<STATION_CALLSIGN:${ownCallsign.length}>${ownCallsign} `
   )
   if (comment && comment !== '') {
-    line += `<COMMENT:${comment.length}>${comment} `; 
+    line += `<COMMENT:${comment.length}>${comment} `;
   }
 
   if (ownSummit && ownSummit !== '') {
@@ -490,11 +490,11 @@ function generateAdifLine(
     line += `<QTH:${chasedSummit.length}>${chasedSummit} `;
     line += `<SOTA_REF:${chasedSummit.length}>${chasedSummit} `;
   }
- 
+
   if (rstTx && rstTx !== '') {
     line += `<RST_SENT:${rstTx.length}>${rstTx} `;
   }
-  
+
   if (rstRx && rstRx !== '') {
     line += `<RST_RCVD:${rstRx.length}>${rstRx} `
   }
