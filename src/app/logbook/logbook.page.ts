@@ -134,7 +134,19 @@ export class LogbookPage {
     }
   }
 
-  logQso() {
+  async logQso() {
+    // Some fields of the QSO form might be numbers
+    // however the Qso type needs all strings. If we 
+    // don't do this, typescript won't complain but
+    // the resulting JS code still keeps some fields as
+    // numbers which then is a problem if we call 
+    // field.length in the ADIF export
+    await Object.keys(this.form).forEach(key => {
+      if (this.form[key]?.toString) {
+        this.form[key] = this.form[key].toString();
+      }
+    })
+
     const newQso:Qso = {
       ...this.form
     }

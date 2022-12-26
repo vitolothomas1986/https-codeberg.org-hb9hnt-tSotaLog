@@ -391,16 +391,16 @@ export class HistoryPage {
 }
 
 function generateCsvLine(
-  ownCallsign,
-  ownSummit,
-  otherCallsign,
-  chasedSummit,
-  date,
-  time,
-  freq,
-  mode,
-  comment,
-) {
+  ownCallsign: string,
+  ownSummit: string,
+  otherCallsign: string,
+  chasedSummit: string,
+  date: string,
+  time: string,
+  freq: string,
+  mode: string,
+  comment: string,
+): string {
   return 'V2,'.concat(
     `${ownCallsign},${ownSummit},`,
     `${date},${time},`,
@@ -412,18 +412,18 @@ function generateCsvLine(
 }
 
 function generateAdifLine(
-  ownCallsign,
-  ownSummit,
-  otherCallsign,
-  chasedSummit,
-  date,
-  time,
-  freq,
-  mode,
-  comment,
-  rstTx,
-  rstRx,
-) {
+  ownCallsign: string,
+  ownSummit: string,
+  otherCallsign: string,
+  chasedSummit: string,
+  date: string,
+  time: string,
+  freq: string,
+  mode: string,
+  comment: string,
+  rstTx: string,
+  rstRx: string,
+): string {
   const datePipe = new DatePipe('en-US');
   const dateString = datePipe.transform(new Date(date), 'yyyyMMdd');
   const operator = ownCallsign.replace('/P', '');
