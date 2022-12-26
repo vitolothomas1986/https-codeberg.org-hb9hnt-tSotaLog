@@ -8,6 +8,12 @@ hat to write down somewhere that I don't forget them (i.e. here).
 
 * Add a summit database to display summit names
 
+# Version 0.5.0 (unreleased)
+
+* Issue #12: ADIF export contained fields that had a specified length of `undefined`
+  because some values of the QSO were JS numbers (even Typescript believed them to
+  be strings).
+
 # Version 0.4.0
 
 * Issue #3: Added ADIF export support. The export dialog now asks for the format to export
