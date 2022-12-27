@@ -167,7 +167,7 @@ export class StationsService {
     } else if (value.name !== station.name && replace ) {
       // Value will be replaced.
       await store.put(station);
-    } else {
+    } else if ( !replace ) {
         throw new Error(`Station '${station.callsign}' already exists!`);
     }
     await transaction.done;
