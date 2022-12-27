@@ -261,7 +261,5 @@ export class LogbookPage {
     });
 
     return await popover.present();
-
   }
-
 }
