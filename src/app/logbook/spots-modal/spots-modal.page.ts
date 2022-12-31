@@ -12,13 +12,15 @@ import { catchError } from 'rxjs/operators';
 export class SpotsModalPage implements OnInit {
 
   spots: Spot[];
-  fetchLimit: -0.5;
+  fetchLimit: number;
 
   constructor(
     public modalController: ModalController,
     public alertController: AlertController,
     private spotsService: SpotsService,
-  ) {}
+  ) {
+    this.fetchLimit = -2; 
+  }
 
   async ngOnInit() {
     this.spotsService

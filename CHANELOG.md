@@ -8,7 +8,10 @@ hat to write down somewhere that I don't forget them (i.e. here).
 
 * Add a summit database to display summit names
 
-# Version 0.5.0 (unreleased)
+# Version 0.4.1 (bugfix release)
+
+* Issue #13: Fix fetching of spots. Because our value of -0.5 was not supported by
+  the API, only one spot showed up in the list.
 
 * Issue #12: ADIF export contained fields that had a specified length of `undefined`
   because some values of the QSO were JS numbers (even Typescript believed them to
