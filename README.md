@@ -5,9 +5,11 @@ and portable operation. (See impressum)
 
 ## Features
 
-* Loggins SOTA QSO's
+* Loggins SOTA QSO's (as activator or chaser, including s2s)
 * Editing QSOs (useful in a pile-up)
 * Exporting a CSV to import in SotaData
+* Exportint the QSOs to ADIF for external log programs
+* Fetching the SOTAwatch spots of the last 2 hours and copy them to the QSO entry form
 
 The following design guidelines were implemented on purpose:
 
@@ -22,7 +24,7 @@ The followin features might or might not be added to
 the app eventually:
 
 * Auto-completion of summit references
-* Validation ot fhe data before exporting
+* Validation ot the data before exporting
 
 ## File export
 
@@ -31,18 +33,11 @@ to import to Sotadata under
 
 https://www.sotadata.org.uk/en/upload/activator/csv
 
-The file will either be saved in a path calles `tSotaData` in your device root or if 
-the app does not have the permission to write to this location under
+The file will be saved under
 
 ```
 Android/data/ch.hb9hnt.tsotalog/files
 ```
-
-If it is latter try to change the storage permissions for the app in the Android settings.
-
-### Can I create a chaser log?
-
-You will but you have to wait for release 0.2.0
 
 ## Developing and Debugging
 
@@ -54,9 +49,6 @@ You need the following installed:
 * gradle
 * npm
 * Android tools including platform-tools. Android Studio should be ok, too.
-
-
-
 
 ```bash
 # Correct if you do a default install of Android Studio. Change as appropriate
