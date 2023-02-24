@@ -8,6 +8,12 @@ hat to write down somewhere that I don't forget them (i.e. here).
 
 * Add a summit database to display summit names
 
+# Version 0.5.0 (future release)
+
+* Issue #14: We now use the Cordova save dialog plugin to allow the user to choose
+  where to save the exported files. This applies to the names.csv and the log csv 
+  and adif files.
+
 # Version 0.4.1 (bugfix release)
 
 * Issue #13: Fix fetching of spots. Because our value of -0.5 was not supported by
