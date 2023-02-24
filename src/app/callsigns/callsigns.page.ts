@@ -8,8 +8,11 @@ import { ToastController } from '@ionic/angular';
 import { StorageService } from '../storage.service';
 import { StationsService } from '../stations.service';
 import { Station } from '../../types';
+import { getFilePath } from './../../helpers'
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import * as papa from 'papaparse';
+
+declare const cordova;
 
 @Component({
   selector: 'app-callsigns',
@@ -88,13 +91,12 @@ export class CallsignsPage implements OnInit {
   async uploadList() {
     const opening = await this.loadingController.create({
       message: `Opening file...`,
-      //message: `Loading ${file.name}`,
     });
     opening.present();
-    // This takes waay to long. That's why we already show a loading 
+    // This takes waay to long. That's why we already show a loading
     // controller above
     const file = await this.chooser.getFile('text/csv');
-    
+
     const loading = await this.loadingController.create({
       message: `Loading ${file.name}`,
     });
@@ -102,7 +104,7 @@ export class CallsignsPage implements OnInit {
       this.refresh();
     });
 
-    // Switch out the loading notification with a more 
+    // Switch out the loading notification with a more
     // informative one.
     opening.dismiss();
     loading.present();
@@ -119,13 +121,13 @@ export class CallsignsPage implements OnInit {
   async downloadList() {
     const date = (new Date()).toISOString().split('T')[0];
     const filename = `${date}_names.csv`;
-    const directory = this.file.externalDataDirectory;
     let message = '';
     let data = '';
+    let uri;
 
     // Start loading data - and informing the user about it
     const loading = await this.loadingController.create({
-      message: `Saving to ${filename}`,
+      message: 'Preparing data to export...',
     });
     loading.present();
     const stations = await this.stationsService.getAllStations();
@@ -141,14 +143,14 @@ export class CallsignsPage implements OnInit {
       ]
     );
 
+    loading.dismiss();
     try {
-      await this.file.writeFile(directory, filename, data, { replace: true });
-      message = `File saved to\n'${directory.replace(/^file:\/\//, '')}${filename}'`;
-    } catch {
-      message = 'ERROR: Failed to save file!'
+      uri = await cordova.plugins.saveDialog.saveFile(data, filename)
+      message = `File saved to\n'${getFilePath(uri)}'`;
+    } catch (e) {
+      message = `ERROR: ${e}`;
     }
 
-    loading.dismiss();
     this.message(message);
   }
 

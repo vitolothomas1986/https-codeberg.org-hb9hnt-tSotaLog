@@ -12,3 +12,13 @@ export function getMainCall(call: string): string {
 
   return mainCall.toUpperCase();
 }
+
+export function getFilePath(uri: string): string {
+  return decodeURI(uri)
+    .replace(/content:\/\/com.android./, '')
+    // I honestlly don't get why there are
+    // things like %3A instead of a /. I'm
+    // missing something here....
+    // So feel free to fix this
+    .replace(/%[0-9][A-Z]/g, '/');
+}

@@ -11,7 +11,10 @@ import { ToastController } from '@ionic/angular';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import { GlobalSettings } from './../globalsettings';
 import { Qso, QsoHistory } from './../../types'
+import { getFilePath } from './../../helpers'
 import { StorageService } from '../storage.service';
+
+declare const cordova;
 
 @Component({
   selector: 'app-history',
@@ -275,9 +278,9 @@ export class HistoryPage {
     const name = this.qsoHistory[index].name;
     const date = (new Date()).toISOString().split('T')[0];
     const filename = `${name}_${date}.${type}`;
-    const directory = this.file.externalDataDirectory;
     const data = this.generateExport(index, type);
     let message = '';
+    let uri;
 
     this.androidPermissions.requestPermissions(
       [
@@ -287,10 +290,10 @@ export class HistoryPage {
     );
 
     try {
-      await this.file.writeFile(directory, filename, data, { replace: true });
-      message = `File saved to\n'${directory.replace(/^file:\/\//, '')}${filename}'`;
-    } catch {
-      message = 'ERROR: Failed to save file!'
+      uri = await cordova.plugins.saveDialog.saveFile(data, filename)
+      message = `File saved to\n'${getFilePath(uri)}'`;
+    } catch (e) {
+      message = `ERROR: ${e}`;
     }
 
     const toast = await this.toastController.create({
