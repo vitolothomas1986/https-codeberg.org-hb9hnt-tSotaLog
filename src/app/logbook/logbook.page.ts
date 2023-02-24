@@ -112,9 +112,14 @@ export class LogbookPage {
     const result = await modal.onWillDismiss()
     const spot = result?.data
     if (spot) {
-      // Set mode to s2s as we're s2s hunting
-      this.logType = 'Summit2Summit';
-      // Copy spot into the fields
+      if (this.logType === 'Activator') {
+        // if we're chasing we'll assume that the
+        // copied log is intended to be a chaser
+        // log. So only change to Summit2Summit
+        // if we're activating
+        this.logType = 'Summit2Summit';
+      }
+      // Copy spot into the form fields
       Object.assign(this.form, {
         band: spot.frequency,
         mode: spot.mode,
