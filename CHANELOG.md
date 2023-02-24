@@ -10,6 +10,8 @@ hat to write down somewhere that I don't forget them (i.e. here).
 
 # Version 0.5.0 (future release)
 
+* BUGFIX Issue #20: Don't switch to a summit2summit log if we're in chaser mode.
+
 * Issue #14: We now use the Cordova save dialog plugin to allow the user to choose
   where to save the exported files. This applies to the names.csv and the log csv 
   and adif files.
