@@ -95,7 +95,14 @@ export class CallsignsPage implements OnInit {
     opening.present();
     // This takes waay to long. That's why we already show a loading
     // controller above
-    const file = await this.chooser.getFile('text/csv');
+    const file = await this.chooser.getFile();
+    opening.dismiss();
+    
+    if (!file) {
+      // If no file was chosen the user most likely canceled
+      // the loading.
+      return
+    }
 
     const loading = await this.loadingController.create({
       message: `Loading ${file.name}`,
@@ -104,16 +111,18 @@ export class CallsignsPage implements OnInit {
       this.refresh();
     });
 
-    // Switch out the loading notification with a more
-    // informative one.
-    opening.dismiss();
+    // Present the new loading indicator which is more
+    // informative
     loading.present();
 
-
-    const data = new TextDecoder().decode(file.data);
-    if (file) {
-      const parsedCsvData = papa.parse(data).data;
-      await this.stationsService.updateWithCSV(parsedCsvData as [string, string][]);
+    try {
+      const data = new TextDecoder().decode(file.data);
+      if (data) {
+        const parsedCsvData = papa.parse(data).data;
+        await this.stationsService.updateWithCSV(parsedCsvData as [string, string][]);
+      }
+    } catch (e) {
+      this.message(`ERROR: '${e}'`);
     }
     return loading.dismiss();
   }
