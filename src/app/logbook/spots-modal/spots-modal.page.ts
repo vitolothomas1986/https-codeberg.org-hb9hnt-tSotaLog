@@ -19,7 +19,7 @@ export class SpotsModalPage implements OnInit {
     public alertController: AlertController,
     private spotsService: SpotsService,
   ) {
-    this.fetchLimit = -2; 
+    this.fetchLimit = -2;
   }
 
   async ngOnInit() {
