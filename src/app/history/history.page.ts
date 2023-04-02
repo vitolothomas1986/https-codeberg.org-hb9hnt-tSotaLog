@@ -279,6 +279,7 @@ export class HistoryPage {
     const date = (new Date()).toISOString().split('T')[0];
     const filename = `${name}_${date}.${type}`;
     const data = this.generateExport(index, type);
+    const dataBlob = new Blob([data], {type: 'text/plain'});
     let message = '';
     let uri;
 
@@ -290,7 +291,7 @@ export class HistoryPage {
     );
 
     try {
-      uri = await cordova.plugins.saveDialog.saveFile(data, filename)
+      uri = await cordova.plugins.saveDialog.saveFile(dataBlob, filename)
       message = `File saved to\n'${getFilePath(uri)}'`;
     } catch (e) {
       message = `ERROR: ${e}`;

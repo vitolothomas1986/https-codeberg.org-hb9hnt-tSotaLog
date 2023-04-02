@@ -145,6 +145,8 @@ export class CallsignsPage implements OnInit {
       data += `${station.callsign},"${station.name}"\n`
     }
 
+    const dataBlob = new Blob([data], {type: 'text/plain'});
+
     this.androidPermissions.requestPermissions(
       [
         this.androidPermissions.PERMISSION.READ_EXTERNAL_STORAGE,
@@ -154,7 +156,7 @@ export class CallsignsPage implements OnInit {
 
     loading.dismiss();
     try {
-      uri = await cordova.plugins.saveDialog.saveFile(data, filename)
+      uri = await cordova.plugins.saveDialog.saveFile(dataBlob, filename)
       message = `File saved to\n'${getFilePath(uri)}'`;
     } catch (e) {
       message = `ERROR: ${e}`;
