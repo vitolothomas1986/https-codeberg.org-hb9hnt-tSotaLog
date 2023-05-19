@@ -8,7 +8,26 @@ hat to write down somewhere that I don't forget them (i.e. here).
 
 * Add a summit database to display summit names
 
-# Version 0.5.0 (future release)
+# Version 0.5.1 (bugrix release)
+
+* Issue #26: Move the toast to the top such that it doesn't cover the bottom
+  bar. More of a workaround because I was to lazy to figure out how to
+  reposition it using CSS...
+
+* When entering a station with a prefix, do not search for the call with the 
+  prefix in the name database. This way we also find names from people operating
+  from abroad
+
+* When exporting, only add `/P` if it is not already present. It might be because
+  we copied from a spot.
+
+* Issue #30: Also fill in the name from the database if the callsign is copied
+  from a spot.
+
+* Issue #29: Ensure mode is copied from the spot, even the original spot uses
+  a lowercase mode.
+
+# Version 0.5.0
 
 * Improved error reporting when importing a names.csv file. This should help
   with debugging csv import errors
