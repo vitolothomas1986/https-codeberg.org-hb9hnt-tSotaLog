@@ -42,7 +42,8 @@ export class CallsignsPage implements OnInit {
   private async message(msg) {
     const toast = await this.toastController.create({
       message: msg,
-      duration: 5000
+      duration: 5000,
+      position: 'top'
     });
     toast.present();
   }

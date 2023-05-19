@@ -245,7 +245,8 @@ export class LogbookPage {
           }
         }
       ],
-      duration: 2000
+      duration: 2000,
+      position: 'top'
     });
 
     toast.present();

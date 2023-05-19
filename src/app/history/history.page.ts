@@ -123,7 +123,8 @@ export class HistoryPage {
 
       const toast = await this.toastController.create({
         message: 'Moved recent QSOs to archive',
-        duration: 2000
+        duration: 2000,
+        position: 'top'
       });
       toast.present();
 
@@ -175,7 +176,8 @@ export class HistoryPage {
 
       const toast = await this.toastController.create({
         message: 'QSOs loaded!',
-        duration: 2000
+        duration: 2000,
+        position: 'top'
       });
       toast.present();
 
@@ -269,7 +271,8 @@ export class HistoryPage {
     this.clipboard.copy(this.generateExport(index, type));
     const toast = await this.toastController.create({
       message: 'Your log has been copied!',
-      duration: 2000
+      duration: 2000,
+      position: 'top'
     });
     toast.present();
   }
@@ -299,7 +302,8 @@ export class HistoryPage {
 
     const toast = await this.toastController.create({
       message,
-      duration: 5000
+      duration: 5000,
+      position: 'top'
     });
     toast.present();
   }
