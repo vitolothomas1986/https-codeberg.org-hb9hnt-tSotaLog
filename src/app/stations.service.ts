@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { openDB, IDBPDatabase, DBSchema } from 'idb';
 import { GlobalSettings } from './globalsettings';
+import { getMainCall } from '../helpers';
 // Required temporarily for the data migration
 // Remove eventually.
 import { StorageService } from './storage.service';
@@ -122,6 +123,10 @@ export class StationsService {
    */
   async getStation(callsign: string): Promise<Station> {
     await this.ready;
+
+    // Normalize callsign
+    callsign = getMainCall(callsign);
+
 
     const store = this.db.transaction('stations').objectStore('stations');
     return store.get(callsign);

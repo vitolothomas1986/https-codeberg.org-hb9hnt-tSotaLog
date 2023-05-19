@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Drivers } from '@ionic/storage';
 import { Storage } from '@ionic/storage-angular';
-import { getMainCall } from '../helpers';
 import { GlobalSettings } from './globalsettings';
 
 @Injectable({

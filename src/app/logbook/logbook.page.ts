@@ -126,6 +126,10 @@ export class LogbookPage {
         chaserSummit: `${spot.associationCode}/${spot.summitCode}`,
         callsign: spot.activatorCallsign,
       });
+
+      // Check whether we know the call and fill in the name
+      // in the comment field
+      await this.callCheck();
     }
   }
 
