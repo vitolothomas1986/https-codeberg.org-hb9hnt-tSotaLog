@@ -11,7 +11,7 @@ import { ToastController } from '@ionic/angular';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import { GlobalSettings } from './../globalsettings';
 import { Qso, QsoHistory } from './../../types'
-import { getFilePath } from './../../helpers'
+import { getFilePath, callIsPortable } from './../../helpers'
 import { StorageService } from '../storage.service';
 
 declare const cordova;
@@ -345,10 +345,16 @@ export class HistoryPage {
       // Add a /P to stations on a summit if the
       // settings say to do so.
       if (this.settings.exportSettings.addPortable) {
-        if (qso.activatorSummit !== '') {
+        if (
+          qso.activatorSummit !== '' &&
+          ! callIsPortable(callsignUsed)
+        ) {
           callsignUsed += '/P';
         }
-        if (qso.chaserSummit !== '') {
+        if (
+          qso.chaserSummit !== '' &&
+          ! callIsPortable(otherCallsign)
+        ) {
           otherCallsign += '/P';
         }
       }

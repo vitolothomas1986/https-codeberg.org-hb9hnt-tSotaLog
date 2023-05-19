@@ -13,6 +13,10 @@ export function getMainCall(call: string): string {
   return mainCall.toUpperCase();
 }
 
+export function callIsPortable(call: string): boolean {
+  return call.toUpperCase().endsWith('/P');
+}
+
 export function getFilePath(uri: string): string {
   return decodeURI(uri)
     .replace(/content:\/\/com.android./, '')
