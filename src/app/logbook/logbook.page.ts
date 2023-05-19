@@ -122,7 +122,7 @@ export class LogbookPage {
       // Copy spot into the form fields
       Object.assign(this.form, {
         band: spot.frequency,
-        mode: spot.mode,
+        mode: spot.mode?.toUpperCase(),
         chaserSummit: `${spot.associationCode}/${spot.summitCode}`,
         callsign: spot.activatorCallsign,
       });
