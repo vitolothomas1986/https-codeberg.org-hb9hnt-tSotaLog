@@ -47,7 +47,7 @@ You need the following installed:
 
 * OpenJDK development package from your distro
 * gradle
-* npm
+* yarn 
 * Android tools including platform-tools. Android Studio should be ok, too.
 
 ```bash
@@ -55,8 +55,8 @@ You need the following installed:
 export ANDROID_SDK_ROOT=$HOME/Android/Sdk/
 export PATH=$PATH:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools
 
-sudo npm i -g @ionic/cli -g cordova -g native-run -g cordova-res
-npm install
+sudo yarn global add @ionic/cli cordova native-run cordova-res
+yarn install
 ionic cordova resources
 # Debug in browser without Cordova functionality
 ionic serve --livereload
