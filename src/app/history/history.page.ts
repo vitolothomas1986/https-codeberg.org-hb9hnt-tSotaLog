@@ -69,12 +69,14 @@ export class HistoryPage {
   };
 
   async archiveQsoDialog() {
+    const archiveName = await this.getArchiveName();
     const alert = await this.alertControl.create({
       header: 'Archive recent QSOs',
       inputs: [
         {
           name: 'name',
           type: 'text',
+          value: archiveName,
           placeholder: 'name'
         }, ],
         buttons: [
@@ -93,6 +95,47 @@ export class HistoryPage {
 
     await alert.present();
   }
+
+  /* Returns an name for the archive of the current qsos.
+   *
+   *
+   * If the activator summit is the same or empty for all QSOs we'll mention the summit.
+   * If the date is the same for all QSOs we'll use that date, otherwise we'll use
+   * today's date
+   *
+   */
+  public async getArchiveName() {
+    try {
+      const recentQsos = await this.storage.get('qsos');
+
+      if ((recentQsos == null) || (recentQsos === undefined)) {
+        return new Date().toISOString().split('T')[0];
+      }
+
+      let date = recentQsos[0].date
+      let summit;
+      for (const qso of recentQsos) {
+        if (!summit && qso.activatorSummit) {
+          console.log(`${qso.activatorSummit} ${summit}`)
+          summit = qso.activatorSummit;
+        }
+
+        if (qso.date !== date) {
+          date = new Date().toISOString().split('T')[0];
+        }
+
+        if (qso.activatorSummit !== '' && qso.activatorSummit !== summit) {
+          summit = '';
+        }
+      }
+
+      return `${date} ${summit}`;
+    } catch (error) {
+      console.log(error);
+      return new Date().toISOString().split('T')[0];
+    }
+  }
+
 
   async archiveQsos(name: string) {
 
