@@ -321,13 +321,15 @@ export class HistoryPage {
   }
 
   async saveFile(index: number, type='csv') {
-    const name = this.qsoHistory[index].name;
-    const date = (new Date()).toISOString().split('T')[0];
-    const filename = `${name}_${date}.${type}`;
+    const name = this.qsoHistory[index].name
+      .replaceAll('/', '_')
+      .replaceAll(' ', '_');
+    const filename = `${name}.${type}`;
     const data = this.generateExport(index, type);
     const dataBlob = new Blob([data], {type: 'text/plain'});
     let message = '';
     let uri;
+    console.log(filename)
 
     this.androidPermissions.requestPermissions(
       [
