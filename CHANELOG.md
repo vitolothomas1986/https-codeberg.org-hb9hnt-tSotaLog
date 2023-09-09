@@ -8,6 +8,11 @@ hat to write down somewhere that I don't forget them (i.e. here).
 
 * Add a summit database to display summit names
 
+# Done in dev, next version
+
+* Issue #25: Prepopulate the name of the archive to allow faster archiving of 
+  single summit activations.
+
 # Version 0.5.1 (bugrix release)
 
 * Issue #26: Move the toast to the top such that it doesn't cover the bottom
