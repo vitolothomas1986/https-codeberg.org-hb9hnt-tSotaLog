@@ -2,7 +2,12 @@
   <ion-toolbar>
     <ion-title>Latest Spots</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="dismiss()">Close</ion-button>
+      <ion-button (click)="reload()">
+        <ion-icon name="refresh-outline" aria-label="Refresh"></ion-icon>
+      </ion-button>
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close-outline" aria-label="Close"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>

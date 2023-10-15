@@ -12,6 +12,10 @@ import { catchError } from 'rxjs/operators';
 export class SpotsModalPage implements OnInit {
 
   spots: Spot[];
+  // I don't know what the return type of subscribing to
+  // a http client get observable is. Feel free to specify
+  // the correct type...
+  loading: any;
   fetchLimit: number;
 
   constructor(
@@ -23,7 +27,11 @@ export class SpotsModalPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.spotsService
+    await this.loadSpots();
+  }
+
+  async loadSpots() {
+    this.loading = this.spotsService
       .fetchSpots(this.fetchLimit)
       .pipe(
         catchError(async(error) => {
@@ -50,7 +58,18 @@ export class SpotsModalPage implements OnInit {
       )
       .subscribe((data) => {
         this.spots = data;
+        this.loading.unsubscribe();
       });
+  }
+
+  reload() {
+    // Stop previous request if one is still in
+    // progress
+    if (this.loading && this.loading.unsubscribe) {
+      this.loading.unsubscribe();
+    }
+    this.spots = null;
+    this.loadSpots();
   }
 
   dismiss() {
