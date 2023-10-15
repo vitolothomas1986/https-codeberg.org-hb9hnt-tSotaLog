@@ -10,6 +10,12 @@ hat to write down somewhere that I don't forget them (i.e. here).
 
 # Done in dev, next version
 
+* Issue #24: Added reload button on the spots page to allow refreshing the page.
+  Addidionally we also stop any loading process if spots modal is closed to 
+  avoid delayed error messages.
+
+* Issue #23: Add loading indicator when spots are loaded.
+
 * Issue #21: Whenever a form field in the log book loses focus, we save all form
   values to local storage. If the app is started, we load the previous values. The
   main reason for this is to retain the values if Android decides to stop you app
