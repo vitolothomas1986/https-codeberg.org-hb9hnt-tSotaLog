@@ -8,7 +8,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-list>
+  <ion-list *ngIf="spots else loading">
     <ion-item button (click)="pickSpot(spot)" *ngFor="let spot of spots">
       <ion-label class="{{spot.highlightColor}}">
         <h2>
@@ -21,4 +21,9 @@
       </ion-label>
     </ion-item>
   </ion-list>
+  <ng-template #loading> 
+    <div class="content-loader">
+      <ion-spinner name="lines" class="loader"></ion-spinner>
+    </div>
+  </ng-template>
 </ion-content>
