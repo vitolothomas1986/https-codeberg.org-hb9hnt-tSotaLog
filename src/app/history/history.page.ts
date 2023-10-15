@@ -113,7 +113,7 @@ export class HistoryPage {
       }
 
       let date = recentQsos[0].date
-      let summit;
+      let summit = '';
       for (const qso of recentQsos) {
         if (!summit && qso.activatorSummit) {
           console.log(`${qso.activatorSummit} ${summit}`)
