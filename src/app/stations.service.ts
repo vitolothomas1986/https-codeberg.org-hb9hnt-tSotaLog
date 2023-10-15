@@ -2,9 +2,6 @@ import { Injectable } from '@angular/core';
 import { openDB, IDBPDatabase, DBSchema } from 'idb';
 import { GlobalSettings } from './globalsettings';
 import { getMainCall } from '../helpers';
-// Required temporarily for the data migration
-// Remove eventually.
-import { StorageService } from './storage.service';
 import { Station } from '../types';
 
 interface StationsDB extends DBSchema {
@@ -27,7 +24,6 @@ export class StationsService {
 
   constructor(
     private globalSettings: GlobalSettings,
-    private storageService: StorageService,
   ) {
     // Save the database initializing promise
     // so we can check whether the service is
@@ -40,15 +36,12 @@ export class StationsService {
       this.db.close();
     }
     const db = await openDB<StationsDB>('Stations', 1, {
-      // For now we have to use arrow functions here to be able to
-      // migrate the data from `this`
-      upgrade(database, oldVersion, newVersion, transaction, event) {
+      upgrade(database, /* oldVersion, newVersion, transaction, event */) {
         const store = database.createObjectStore('stations', {keyPath: 'callsign'});
         store.createIndex('name', 'name');
       },
     });
-    this.db = db
-    this.migrateOldData();
+    this.db = db;
   }
 
   /**
@@ -69,24 +62,6 @@ export class StationsService {
    */
   checkStation(station: Station): boolean {
     return this.checkCallsign(station.callsign);
-  }
-
-
-  /**
-   * Migrates data from the old storage. Can be removed in a few
-   * versions
-   */
-  async migrateOldData() {
-    await this.ready;
-    const oldData = await this.storageService.getStationData();
-    if (oldData.length > 0) {
-      const promises = []
-      for (const station of oldData) {
-        promises.push(this.add(station as Station, true));
-      }
-      await Promise.all(promises);
-      await this.storageService.clearStationData();
-    }
   }
 
   /**

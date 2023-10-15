@@ -10,6 +10,11 @@ hat to write down somewhere that I don't forget them (i.e. here).
 
 # Done in dev, next version
 
+* Remove data migration code for callsign data. By now everyone who even use that
+  acient version of the app which still used the storage service for station names
+  should have updated to a version that did the migration. So we remove this.
+  POSSIBLY BREAKING!! Only update to 0.6.0 from 0.5.x.
+
 * Issue #25: Prepopulate the name of the archive to allow faster archiving of 
   single summit activations.
 
