@@ -76,8 +76,7 @@ export class HistoryPage {
         {
           name: 'name',
           type: 'text',
-          value: archiveName,
-          placeholder: 'name'
+          placeholder: archiveName 
         }, ],
         buttons: [
           {
@@ -87,7 +86,7 @@ export class HistoryPage {
           {
             text: 'archive QSOs',
             handler: (alertData) => {
-              this.archiveQsos(alertData.name);
+              this.archiveQsos(alertData.name || archiveName);
             }
           }
         ]
