@@ -19,6 +19,7 @@
             [(ngModel)]="form.chaserSummit" 
             type="text" id="summitInput" 
             (ionChange)="this.summitCheck($event)" 
+            (ionBlur)="this.saveForm()"
             clear-input="true"
             placeholder="Chaser Summit">
           </ion-input>
@@ -27,6 +28,7 @@
               [(ngModel)]="form.activatorSummit" 
               type="text" id="summitInput" 
               (ionChange)="this.summitCheck($event)" 
+              (ionBlur)="this.saveForm()"
               clear-input="true"
               placeholder="Summit Reference">
             </ion-input>
@@ -37,6 +39,7 @@
             <ion-select 
               [(ngModel)]="form.mode" 
               placeholder="Mode"
+              (ionChange)="this.saveForm()"
               interface="action-sheet">
               <ion-select-option 
                 *ngFor="let mode of settings.modes" 
@@ -53,6 +56,7 @@
             <ion-input 
               [(ngModel)]="form.band" 
               type="number" 
+              (ionBlur)="this.saveForm()"
               clear-input="true"
               placeholder="MHz">
             </ion-input>
@@ -63,6 +67,7 @@
             <ion-input 
               [(ngModel)]="form.callsign" 
               (ionChange)="this.callCheck()"
+              (ionBlur)="this.saveForm()"
               class="call-input"
               autocapitalize="characters"
               type="text"
@@ -78,6 +83,7 @@
             <ion-input 
               [(ngModel)]="form.rstTx" 
               type="number" 
+              (ionBlur)="this.saveForm()"
               placeholder="RST TX">
             </ion-input>
           </div>
@@ -87,6 +93,7 @@
             <ion-input 
               [(ngModel)]="form.rstRx" 
               type="number" 
+              (ionBlur)="this.saveForm()"
               placeholder="RST RX">
             </ion-input>
           </div>
@@ -100,6 +107,7 @@
               [(ngModel)]="form.comment" 
               type="text" 
               clear-input="true"
+              (ionBlur)="this.saveForm()"
               placeholder="Name/Comment">
             </ion-input>
           </div>
@@ -112,6 +120,7 @@
             type="text" 
             id="s2sInput" 
             (ionChange)="this.summitCheck($event)" 
+            (ionBlur)="this.saveForm()"
             placeholder="S2S Summit Reference">
           </ion-input>
         </ion-col>

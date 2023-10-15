@@ -60,8 +60,13 @@ export class LogbookPage {
     this.ready = this.init();
   }
 
-  async init() {
+  async saveForm() {
+    await this.storage.ready;
+    this.storage.set('current-form', this.form)
+  }
 
+  async init() {
+    await this.storage.ready;
     try {
       const qsos = await this.storage.get('qsos')
       if ((qsos != null) && (qsos !== undefined)) {
@@ -74,6 +79,12 @@ export class LogbookPage {
       this.settings.recentQsos = [];
     }
 
+    // Load previous form data
+    const currentForm = await this.storage.get('current-form');
+    if (currentForm) {
+      Object.assign(this.form, currentForm);
+    }
+    
     await this.settings.ready
 
     if (this.settings.darkmode === true) {
