@@ -10,6 +10,11 @@ hat to write down somewhere that I don't forget them (i.e. here).
 
 # Done in dev, next version
 
+* Issue #21: Whenever a form field in the log book loses focus, we save all form
+  values to local storage. If the app is started, we load the previous values. The
+  main reason for this is to retain the values if Android decides to stop you app
+  in the background.
+
 * Remove data migration code for callsign data. By now everyone who even use that
   acient version of the app which still used the storage service for station names
   should have updated to a version that did the migration. So we remove this.
