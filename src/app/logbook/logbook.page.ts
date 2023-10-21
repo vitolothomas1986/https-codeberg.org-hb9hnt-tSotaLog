@@ -155,15 +155,22 @@ export class LogbookPage {
   }
 
   async logQso() {
-    // Some fields of the QSO form might be numbers
-    // however the Qso type needs all strings. If we
-    // don't do this, typescript won't complain but
-    // the resulting JS code still keeps some fields as
-    // numbers which then is a problem if we call
-    // field.length in the ADIF export
     await Object.keys(this.form).forEach(key => {
+      // Some fields of the QSO form might be numbers
+      // however the Qso type needs all strings. If we
+      // don't do this, typescript won't complain but
+      // the resulting JS code still keeps some fields as
+      // numbers which then is a problem if we call
+      // field.length in the ADIF export
       if (this.form[key]?.toString) {
         this.form[key] = this.form[key].toString();
+      }
+
+      // The user might accidentally enter whitespaces
+      // at the beginning or the end, which are probably 
+      // never put there on purpose..
+      if (this.form[key]?.trim) {
+        this.form[key] = this.form[key].trim()
       }
     })
 
