@@ -8,7 +8,13 @@ hat to write down somewhere that I don't forget them (i.e. here).
 
 * Add a summit database to display summit names
 
-# Done in dev, next version
+# Version 0.6.0 
+
+* Add a clear button to every field in the QSO form. That's necessary because
+  we persist the forms content now (Issue #21).
+
+* Issue #31: Trim white spaces at the beginning and end of string fields when
+  saving a QSO.
 
 * Issue #24: Added reload button on the spots page to allow refreshing the page.
   Addidionally we also stop any loading process if spots modal is closed to 
