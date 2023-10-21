@@ -68,6 +68,7 @@
               [(ngModel)]="form.callsign" 
               (ionChange)="this.callCheck()"
               (ionBlur)="this.saveForm()"
+              clear-input="true"
               class="call-input"
               autocapitalize="characters"
               type="text"
@@ -82,8 +83,9 @@
           <div>
             <ion-input 
               [(ngModel)]="form.rstTx" 
-              type="number" 
               (ionBlur)="this.saveForm()"
+              clear-input="true"
+              type="number" 
               placeholder="RST TX">
             </ion-input>
           </div>
@@ -92,8 +94,9 @@
           <div>
             <ion-input 
               [(ngModel)]="form.rstRx" 
-              type="number" 
               (ionBlur)="this.saveForm()"
+              clear-input="true"
+              type="number" 
               placeholder="RST RX">
             </ion-input>
           </div>
@@ -119,6 +122,7 @@
             [(ngModel)]="form.chaserSummit" 
             type="text" 
             id="s2sInput" 
+            clear-input="true"
             (ionChange)="this.summitCheck($event)" 
             (ionBlur)="this.saveForm()"
             placeholder="S2S Summit Reference">
