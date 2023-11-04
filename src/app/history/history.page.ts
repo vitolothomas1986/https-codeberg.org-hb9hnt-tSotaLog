@@ -324,8 +324,9 @@ export class HistoryPage {
       .replaceAll('/', '_')
       .replaceAll(' ', '_');
     const filename = `${name}.${type}`;
+    const filetype = ((type === 'csv') ? 'text/csv' : 'application/adif')
     const data = this.generateExport(index, type);
-    const dataBlob = new Blob([data], {type: 'text/plain'});
+    const dataBlob = new Blob([data], {type: filetype});
     let message = '';
     let uri;
     console.log(filename)

@@ -146,7 +146,7 @@ export class CallsignsPage implements OnInit {
       data += `${station.callsign},"${station.name}"\n`
     }
 
-    const dataBlob = new Blob([data], {type: 'text/plain'});
+    const dataBlob = new Blob([data], {type: 'text/csv'});
 
     this.androidPermissions.requestPermissions(
       [
