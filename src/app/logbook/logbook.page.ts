@@ -60,11 +60,6 @@ export class LogbookPage {
     this.ready = this.init();
   }
 
-  async saveForm() {
-    await this.storage.ready;
-    this.storage.set('current-form', this.form)
-  }
-
   async init() {
     await this.storage.ready;
     try {
@@ -212,9 +207,14 @@ export class LogbookPage {
     }
 
     this.resetForm();
- }
+  }
 
-  resetForm() {
+  async saveForm() {
+    await this.storage.ready;
+    this.storage.set('current-form', this.form)
+  }
+
+  async resetForm() {
     // clear inputs
     this.form.time = undefined;
     this.form.date = undefined;
@@ -223,6 +223,7 @@ export class LogbookPage {
     this.form.rstRx = '';
     this.form.comment = '';
     this.form.chaserSummit = '';
+    await this.saveForm();
   }
 
   changeType() {
