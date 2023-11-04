@@ -10,6 +10,9 @@ hat to write down somewhere that I don't forget them (i.e. here).
 
 # Version 0.6.0 
 
+* Issue #32: Fix mime type of the exported files. On Android 13 this bug lead to 
+  exports with a `.txt` extension.
+
 * Add a clear button to every field in the QSO form. That's necessary because
   we persist the forms content now (Issue #21).
 
