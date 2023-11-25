@@ -21,6 +21,7 @@ import { StationsService } from '../stations.service';
 export class LogbookPage {
 
   darkmode: boolean;
+  commentAutoContent: string; 
   logType: string;
   settings: GlobalSettings;
   ready: Promise<void>;
@@ -38,6 +39,7 @@ export class LogbookPage {
     private storageService: StorageService) {
 
     this.storage = storageService;
+    this.commentAutoContent = "";
 
     // Possible types are:
     // Activator, Summit2Summit, Chaser
@@ -146,6 +148,11 @@ export class LogbookPage {
     const name = station?.name;
     if (name) {
       this.form.comment = name;
+      this.commentAutoContent = name;
+    } else if (this.commentAutoContent !== "") {
+      const oldName = this.commentAutoContent;
+      this.form.comment = this.form.comment.replace(oldName, "");
+      this.commentAutoContent = "";
     }
   }
 
